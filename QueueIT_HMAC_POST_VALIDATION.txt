@@ -1,0 +1,277 @@
+<!-- Part1: extraction of the values from the cookie and verifying the HMAC -->
+
+<!-- set the initial status -->
+<!-- assume we are going to deny as an initial value -->
+<assign:variable>
+	<name>PMUSER_QIT_HMAC_OUTCOME</name>
+	<value>DENY</value>
+	<hidden>off</hidden>
+</assign:variable>
+
+<!-- we want a reason as well so that we can capture in logs for debugging -->
+<assign:variable>
+	<name>PMUSER_QIT_HMAC_OUTCOME_REASON</name>
+	<value>default</value>
+	<hidden>off</hidden>
+</assign:variable>
+
+<!-- DENY for the following reasons
+1. cookie does not exist
+2. cookie exists but size > 800
+3. cookie exists but invalid hmac
+-->
+
+<!-- no cookie present -->
+<match:request.cookie name="QueueITAccepted-SDFrts345E-V3*" name-wildcard="on" result="false">
+	<assign:variable>
+		<name>PMUSER_QIT_HMAC_OUTCOME</name>
+		<value>DENY</value>
+		<hidden>off</hidden>
+	</assign:variable>
+
+	<assign:variable>
+		<name>PMUSER_QIT_HMAC_OUTCOME_REASON</name>
+		<value>nocookie</value>
+		<hidden>off</hidden>
+	</assign:variable>	
+</match:request.cookie>
+
+<!-- cookie exists -->
+<match:request.cookie name="QueueITAccepted-SDFrts345E-V3*" name-wildcard="on" result="true">
+
+	<!-- extract the cookie value -->
+	<assign:extract-value>
+		<location>Cookie</location>
+		<location-id>QueueITAccepted-SDFrts345E-V3*</location-id>
+		<variable-name>QIT_COOKIE</variable-name>				
+		<hidden>off</hidden>
+	</assign:extract-value>
+
+	<!-- find the size of the cookie value -->
+	<assign:variable>
+		<name>QIT_COOKIE_LENGTH</name>
+		<value>%(QIT_COOKIE)</value>
+		<transform>
+			<string-length></string-length>
+		</transform>
+	</assign:variable>
+
+	<!-- check if the size is greater than 800 -->
+	<!-- cookie length > 800 -->
+	<match:compare arg1="%(QIT_COOKIE_LENGTH)" arg2="800" op="gt" result="true">
+		<assign:variable>
+			<name>PMUSER_QIT_HMAC_OUTCOME</name>
+			<value>DENY</value>
+			<hidden>off</hidden>
+		</assign:variable>
+
+		<assign:variable>
+			<name>PMUSER_QIT_HMAC_OUTCOME_REASON</name>
+			<value>largecookie</value>
+			<hidden>off</hidden>
+		</assign:variable>			
+
+	</match:compare>
+
+	<!-- cookie length < 800 -->
+	<match:compare arg1="%(QIT_COOKIE_LENGTH)" arg2="800" op="gt" result="false">
+
+		<!-- url decode the cookie -->
+		<assign:variable>
+			<name>QIT_COOKIE_URLDECODED</name>
+			<value>%(QIT_COOKIE)</value>
+			<transform>
+				<url-decode></url-decode>
+			</transform>
+		</assign:variable>
+
+		<!--
+		example cookie value: EventId=eventid001&QueueId=ceecd117-ebe6-4bc9-85c2-950fa7db253c&RedirectType=safetynet&IssueTime=1607023051&Hash=4c6bd389314653627d88ce9f390a20f641cd1eb66783a2edd0b5cce95fbbb158 -->
+	
+		<!-- extract the values from the cookie -->
+		<!-- we need the following values:
+		1. EventId
+		2. QueueId
+		3. RedirectType
+		4. IssueTime
+		5. Hash
+		6. FixedValidityMins
+		-->
+
+		<!-- extract the variables from the cookie -->
+		<assign:variable>
+			<name>QIT_EVENTID</name>
+			<value>%(QIT_COOKIE_URLDECODED)</value>
+			<transform>
+			  <extract-param>
+			    <name>EventId</name>
+			    <separator>&amp;</separator>
+			    <case-sensitive>off</case-sensitive>
+			  </extract-param>
+			</transform>
+		</assign:variable>
+
+		<assign:variable>
+			<name>QIT_QUEUEID</name>
+			<value>%(QIT_COOKIE_URLDECODED)</value>
+			<transform>
+			  <extract-param>
+			    <name>QueueId</name>
+			    <separator>&amp;</separator>
+			    <case-sensitive>off</case-sensitive>
+			  </extract-param>
+			</transform>
+		</assign:variable>
+
+		<assign:variable>
+			<name>QIT_RT</name>
+			<value>%(QIT_COOKIE_URLDECODED)</value>
+			<transform>
+			  <extract-param>
+			    <name>RedirectType</name>
+			    <separator>&amp;</separator>
+			    <case-sensitive>off</case-sensitive>
+			  </extract-param>
+			</transform>
+		</assign:variable>
+
+		<assign:variable>
+			<name>QIT_IT</name>
+			<value>%(QIT_COOKIE_URLDECODED)</value>
+			<transform>
+			  <extract-param>
+			    <name>IssueTime</name>
+			    <separator>&amp;</separator>
+			    <case-sensitive>off</case-sensitive>
+			  </extract-param>
+			</transform>
+		</assign:variable>
+
+		<!-- note: making it lower case to standardize it -->
+		<assign:variable>
+			<name>QIT_HASH</name>
+			<value>%(QIT_COOKIE_URLDECODED)</value>
+			<transform>
+			  <extract-param>
+			    <name>Hash</name>
+			    <separator>&amp;</separator>
+			    <case-sensitive>off</case-sensitive>
+			  </extract-param>
+			  <lower></lower>
+			</transform>
+		</assign:variable>
+
+		<assign:variable>
+			<name>QIT_FIXEDVALIDITY</name>
+			<value>%(QIT_COOKIE_URLDECODED)</value>
+			<transform>
+			  <extract-param>
+			    <name>FixedValidityMins</name>
+			    <separator>&amp;</separator>
+			    <case-sensitive>off</case-sensitive>
+			  </extract-param>
+			  <lower></lower>
+			</transform>
+		</assign:variable>		
+
+		<!-- Create the HMAC string to sign -->
+		<assign:variable>
+			<name>QIT_STRING_TO_SIGN</name>
+			<value>%(QIT_EVENTID)%(QIT_QUEUEID)%(QIT_FIXEDVALIDITY)%(QIT_RT)%(QIT_IT)</value>
+		</assign:variable>
+
+		<!-- create the SHA256 HMAC -->
+		<!-- making it lower case to standardize comparison -->
+		<assign:variable>
+			<name>QIT_CALCULATED_HMAC</name>
+			<value>%(QIT_STRING_TO_SIGN)</value>
+			<transform>
+				<hmac>
+					<key>%(PMUSER_QIT_HMACKEY)</key>
+					<algorithm>SHA256</algorithm>					
+				</hmac>
+				<base64Decode></base64Decode>
+				<hexEncode></hexEncode>
+				<lower></lower>
+			</transform>
+		</assign:variable>
+
+		<!-- compare the value from the cookie and the calculated hmac -->
+		<!-- hmac matches -->
+		<match:compare arg1="%(QIT_CALCULATED_HMAC)" arg2="%(QIT_HASH)" op="eq" result="true">
+			<assign:variable>
+				<name>PMUSER_QIT_HMAC_OUTCOME</name>
+				<value>ALLOW</value>
+				<hidden>off</hidden>
+			</assign:variable>
+
+			<!-- we want a reason as well so that we can capture in logs for debugging -->
+			<assign:variable>
+				<name>PMUSER_QIT_HMAC_OUTCOME_REASON</name>
+				<value>validhmac</value>
+				<hidden>off</hidden>
+			</assign:variable>			
+
+		</match:compare>		
+
+		<!-- compare the value from the cookie and the calculated hmac -->
+		<!-- hmac does not match -->
+		<match:compare arg1="%(QIT_CALCULATED_HMAC)" arg2="%(QIT_HASH)" op="eq" result="false">
+			<assign:variable>
+				<name>PMUSER_QIT_HMAC_OUTCOME</name>
+				<value>DENY</value>
+				<hidden>off</hidden>
+			</assign:variable>
+
+			<!-- we want a reason as well so that we can capture in logs for debugging -->
+			<assign:variable>
+				<name>PMUSER_QIT_HMAC_OUTCOME_REASON</name>
+				<value>wronghmac</value>
+				<hidden>off</hidden>
+			</assign:variable>			
+		</match:compare>
+	</match:compare>
+</match:request.cookie>
+
+<!-- write the result to custom field -->
+<reporting:lds.custom-field>%(PMUSER_QIT_HMAC_OUTCOME):%(PMUSER_QIT_HMAC_OUTCOME_REASON)</reporting:lds.custom-field>
+
+<!-- Part 2: Deciding how to take action based on the HMAC outcome -->
+
+<!-- construct a response only for DENY -->
+<match:variable name="PMUSER_QIT_HMAC_OUTCOME" value="DENY" result="true">
+	<edgeservices:construct-abort-response>
+		<status>on</status>
+		<http-status>403</http-status>	
+		<body>{"errors":[{"message":"API_ENDPOINT_ERROR_generic","type":"AccessDeniedException"}]}</body>
+	</edgeservices:construct-abort-response>
+
+	<!-- set the correct content-type -->
+	<edgeservices:modify-outgoing-response.remove-header>
+	   <name>Content-Type</name>
+	   <status>on</status>
+	</edgeservices:modify-outgoing-response.remove-header>
+
+	<edgeservices:modify-outgoing-response.add-header>
+	   <name>Content-Type</name>
+	   <value>application/json</value>
+	   <status>on</status>
+	</edgeservices:modify-outgoing-response.add-header>
+
+</match:variable>
+
+<!-- debugging on staging -->
+<match:region.attribute value="use-staging" result="true"> 
+	<edgeservices:modify-outgoing-response.add-header>
+	   <name>AKREF</name>
+	   <value>%(AK_REFERENCE_ID)</value>
+	   <status>on</status>
+	</edgeservices:modify-outgoing-response.add-header>
+
+	<edgeservices:modify-outgoing-response.add-header>
+	   <name>AKREASON</name>
+	   <value>%(PMUSER_QIT_HMAC_OUTCOME):%(PMUSER_QIT_HMAC_OUTCOME_REASON)</value>
+	   <status>on</status>
+	</edgeservices:modify-outgoing-response.add-header>	
+</match:region.attribute>
+
