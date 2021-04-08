@@ -36,11 +36,11 @@ The high level logic is as follows:
 ![Edge Worker Integration / Logical Flow](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/akamai_edge_worker_diagram_v0.2.png)
 
  1. User requests a page on your server
- 2. The validation method sees that the has no Queue-it session cookie and no `queueittoken` and sends him to the correct queue based on the configuration
+ 2. Upon first request of a protected page, the validation method will see that there is no Queue-it session cookie and no `queueittoken` and send the user to the correct queue based on the configuration
  3. User waits in the queue
  4. User is redirected back to your website, now with a `queueittoken`
  5. The validation method validates the `queueittoken` and creates a Queue-it session cookie
- 6. The user browses to a new page and the Queue-it session cookie will let him go there without queuing again
+ 6. The user browses to a new page and the presence of a valid Queue-it session cookie prevent a return to the queue
 
 ## How to validate a user
 To validate that the current user is allowed to enter your website (has been through the queue) these steps are needed:
