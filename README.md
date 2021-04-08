@@ -2,9 +2,9 @@
 
 The Queue-it Security Framework ensures that end-users are not able to access your online application without first going through the queue for any and all “protected” areas and paths on your sites. The queue system is implemented by adding a server-side (request-level) integration that protects your online application by redirecting users to a waiting room according to web traffic settings in the Queue-it GO Platform. After the integration is complete, queue system behavior and operations are managed in Queue-it’s Go Platform and/or via the Queue-it Admin API.
 
-This Akamai Connector SDK uses Akamai Edge Workers (aka, Queue-it’s “serverless” server-side KnownUser integration) to integrate Queue-it functionality into Akamai’s proxy network. Because the Akamai platform contains a large collection of tools, the Queue-it Edge Worker can be implemented as a standalone service or alongside other Akamai capabilities, such as Page/Property Manager rules, Bot Manager, and HMAC (“dynamic hash”) filtering.
+This Akamai Connector SDK uses Akamai Edge Workers (aka, Queue-it’s server-side KnownUser connector) to integrate Queue-it functionality into Akamai’s proxy network. Because the Akamai platform contains a large collection of tools, the Queue-it Edge Worker can be implemented as a standalone service or alongside other Akamai capabilities, such as Page/Property Manager rules, Bot Manager, and HMAC (“dynamic hash”) POST filtering.
 
-A subscription / access to Akamai Edge Workers is required to utilized this connector.
+A subscription / access to Akamai Edge Workers is required to utilize this connector, and Akamai resources and professional services should be consulted.
 
 >You can find the latest released version [here](https://github.com/queueit/KnownUser.V3.Akamai/releases/latest).
 
@@ -12,10 +12,16 @@ A subscription / access to Akamai Edge Workers is required to utilized this conn
 The Queue-it Security Framework ensures that end users cannot bypass the queue by adding a server-side integration to your server.
 
 ## Installation
-Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized with a specific configuration (protection schema) created and downloaded from the Queue-it GO Platform. 
- - Step 1
- - Step 2
- - Step 3
+Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
+ - Step 1: Download all SDK files and create bundle for upload to Akamai Edge Worker manager **
+ - Step 2: Create Property Manager rule in Akamai for the URL/Hostname/Conditions where the edge worker will apply
+ - Step 3: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish an download the Configuration.
+ - Step 4: Upload the Queue-it edge worker bundle (NOTE: The default configuration is to protect everything specified by the PM config)
+ - Step 5: Update the IntegrationConfiguration.js file in the Edge Worker manager with the latest Queue-it configuration
+ - Step 6: Update the bundle.js file in the Edge Worker manager with a new version and description
+ - Step 7: Deploy the updated Akamai PM configuration
+
+** https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-53F43F70-BEBC-4BA4-A2FB-3F23A6125106.html 
 
 ## Introduction
 When a user is redirected back from the queue to your website, the queue engine can attache a query string parameter (`queueittoken`) containing some information about the user. 
