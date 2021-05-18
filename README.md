@@ -2,7 +2,7 @@
 
 The Queue-it Security Framework ensures that end-users are not able to access your online application without first going through the queue for any and all “protected” areas and paths on your sites. The queue system is implemented by adding a server-side (request-level) integration that protects your online application by redirecting users to a waiting room according to web traffic settings in the Queue-it GO Platform. After the integration is complete, queue system behavior and operations are managed in Queue-it’s Go Platform and/or via the Queue-it Admin API.
 
-This Akamai Connector SDK uses Akamai Edge Workers (aka, Queue-it’s server-side KnownUser connector) to integrate Queue-it functionality into Akamai’s proxy network. Because the Akamai platform contains a large collection of tools, the Queue-it Edge Worker can be implemented as a standalone service or alongside other Akamai capabilities, such as Page/Property Manager rules, Bot Manager, and HMAC (“dynamic hash”) POST filtering.
+This Akamai Queue-it Connector SDK uses Akamai Edge Workers (aka, Queue-it’s server-side KnownUser connector) to integrate Queue-it functionality into Akamai’s proxy network. 
 
 A subscription / access to Akamai Edge Workers is required to utilize this connector, and Akamai resources and professional services should be consulted.
 
