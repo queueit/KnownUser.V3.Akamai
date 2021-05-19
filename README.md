@@ -41,7 +41,7 @@ This configuration can then be downloaded and saved within the Edge Worker confi
 ### Add a Site Failover behaviour
 After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
 
-![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover.png)
+![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover.PNG)
 
 ## Protecting AJAX calls
 If you need to protect AJAX calls beside page loads you need to add the below JavaScript tags to your pages:
