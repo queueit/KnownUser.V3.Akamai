@@ -19,7 +19,7 @@ A subscription / access to Akamai Edge Workers is required to utilize this conne
 
 ## Installation
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
- - Step 1: Download all files inside src folder and create bundle and upload to Akamai Edge Worker manager **
+ - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
  - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish an download the Configuration and update integrationConfigProvider.js file (you need to replace the value inside variable integrationConfig)
  - Step 3: Upload the Queue-it edge worker bundle
  - Step 4: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
@@ -38,7 +38,7 @@ In this way you can specify which queue(s) should protect which page(s) on the f
 
 This configuration can then be downloaded and saved within the Edge Worker configuration in the Akamai Control Center. 
 
-### Add a Site Failover behaviour
+### Adding a Site Failover behaviour
 After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
 
 ![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover.PNG)
