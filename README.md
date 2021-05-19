@@ -39,7 +39,8 @@ In this way you can specify which queue(s) should protect which page(s) on the f
 This configuration can then be downloaded and saved within the Edge Worker configuration in the Akamai Control Center. 
 
 ### Add a Site Failover behaviour
-After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW failed
+After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
+
 ![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover.png)
 
 ## Protecting AJAX calls
