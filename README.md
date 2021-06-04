@@ -20,23 +20,39 @@ A subscription / access to Akamai Edge Workers is required to utilize this conne
 ## Installation
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
  - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
- - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish an download the Configuration and update integrationConfigProvider.js file (you need to replace the value inside variable integrationConfig)
- - Step 3: Upload the Queue-it edge worker bundle
- - Step 4: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
- - Step 5: In your Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
- - Step 6: Add a Site Failover behaviour to retry if EdgeWorker fails
- - Step 7: Deploy the updated Akamai Property configuration
+ - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish the Configuration. 
+ - Step 3: Replace/dowoload the integration config in Edgeworker by updating integrationConfigProvider.js file.			
+ - Step 4: Upload the Queue-it edge worker bundle
+ - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
+ - Step 6: In your Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
+ - Step 7: Add a Site Failover behavior to retry if EdgeWorker fails
+ - Step 8: Add integration config download criteria condition, behavior and cache if integration config download method is used.
+ - Step 9: Deploy the updated Akamai Property configuration
 
 ** https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-53F43F70-BEBC-4BA4-A2FB-3F23A6125106.html 
 
 ### Providing the queue configuration
-The recommended way is to use the Go Queue-it self-service portal to setup the configuration. 
 The configuration specifies a set of Triggers and Actions. A Trigger is an expression matching one, more or all URLs on your website. 
 When a user enter your website and the URL matches a Trigger-expression the corresponding Action will be triggered. 
 The Action specifies which queue the users should be send to. 
 In this way you can specify which queue(s) should protect which page(s) on the fly without changing the server-side integration.
 
-This configuration can then be downloaded and saved within the Edge Worker configuration in the Akamai Control Center. 
+This configuration can then be used in Edge Worker by two ways.
+  
+#### Replacing integration config within Edge worker
+Latest integration config can be download from Go platform and then can be updated by replacing "integrationConfig" variable value in integrationConfigProvider.js file.
+
+#### Download and cache integration config within Edge worker
+Integration config can be downloaded from Queue-I server by calling Queue-IT API endpoint and then can be cached in akamai network. Use [Customer API-Key] as request header and make sub call from Edgeworker to akamai network to donwload the integration config. Configure the akamai property to use caching behavior to cache the config value. 
+
+### Property configuration to download integration config
+Add following property configuration in the pictures to download integration config and cache it.
+
+![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadCriteria.PNG)
+
+![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadBehavior.PNG)
+
+![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigCache.PNG)
 
 ### Adding a Site Failover behaviour
 After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
