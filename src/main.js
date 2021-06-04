@@ -16,9 +16,9 @@ const COOKIE_VARIABLE_NAME = 'PMUSER_Q_C';
 const HAS_ERROR_VARIABLE_NAME = 'PMUSER_Q_ER';
 const BIG_SET_COOKIE_VALUE = 'TOOBIGCOOKIE';
 const QUEUEIT_FAILED_HEADERNAME = 'x-queueit-failed';
-const CustomerId = "queueitknownusertst";
-const SecretKey = "954656b7-bcfa-4de5-9c82-ff3805edd953737070fd-2f5d-4a11-b5ac-5c23e1b097b1";
-const APIKey = "329a3d91-259c-4fd9-8f23-c452b296e1db";
+const CustomerId = "";
+const SecretKey = "";
+const APIKey = "";
 export function onClientRequest(request) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
