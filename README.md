@@ -21,7 +21,9 @@ A subscription / access to Akamai Edge Workers is required to utilize this conne
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
  - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
  - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish the Configuration. 
- - Step 3: Replace/dowoload the integration config in Edgeworker by updating integrationConfigProvider.js file.			
+ - Step 3: Provide integration config by implementing one of the following methods.
+   - Manually updating integration config within Edge worker code
+   - Dynamically download and cache integration config
  - Step 4: Upload the Queue-it edge worker bundle
  - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
  - Step 6: In your Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
@@ -39,20 +41,23 @@ In this way you can specify which queue(s) should protect which page(s) on the f
 
 This configuration can then be used in Edge Worker by two ways.
   
-#### Replacing integration config within Edge worker
-Latest integration config can be download from Go platform and then can be updated by replacing "integrationConfig" variable value in integrationConfigProvider.js file.
+#### Manually updating integration config within Edge worker code
+Latest integration config can be downloaded from Go platform and then updated by replacing "integrationConfig" variable value in integrationConfigProvider.js file.
 
-#### Download and cache integration config within Edge worker
-Integration config can be downloaded from Queue-I server by calling Queue-IT API endpoint and then can be cached in akamai network. Use [Customer API-Key] as request header and make sub call from Edgeworker to akamai network to donwload the integration config. Configure the akamai property to use caching behavior to cache the config value. 
+#### Dynamically download and cache integration config
+Integration config can be downloaded by calling Queue-IT API endpoint and then can be cached in Akamai network. Use [Customer API-Key] as request header and make sub call from Edgeworker to donwload the integration config. Configure the following Akamai property rules by setting the criteria and caching behavior to download and cache the integration config. 
 
-### Property configuration to download integration config
-Add following property configuration in the pictures to download integration config and cache it.
+##### Edgeworker rule
+Define edgeworker rule in Akamai property and set criteria as illustrated in picture.
+
+![Edge worker criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/edgeworkerCriteria.PNG)
+
+##### Download integration config rule
+Define property rule to download integration config and add following configuration illustrated in the pictures.
 
 ![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadCriteria.PNG)
 
 ![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadBehavior.PNG)
-
-![Download integration config Outgoing Path](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/outgoingRequestPath.PNG)
 
 ![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigCache.PNG)
 
