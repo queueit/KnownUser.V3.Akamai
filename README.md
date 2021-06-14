@@ -47,12 +47,12 @@ Latest integration config can be downloaded from Go platform and then updated by
 #### Dynamically download and cache integration config
 Integration config can be downloaded by calling Queue-IT API endpoint and then can be cached in Akamai network. Use [Customer API-Key] as request header and make sub call from Edgeworker to donwload the integration config. Configure the following Akamai property rules by setting the criteria and caching behavior to download and cache the integration config. 
 
-##### Edgeworker rule
+#### Edgeworker rule
 Define edgeworker rule in Akamai property and set criteria as illustrated in picture.
 
 ![Edge worker criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/edgeworkerCriteria.PNG)
 
-##### Download integration config rule
+#### Download integration config rule
 Define property rule to download integration config and add following configuration illustrated in the pictures.
 
 ![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadCriteria.PNG)
