@@ -22,14 +22,15 @@ Installing the edge worker the first time requires uploading an archive file (TG
  - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
  - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish the Configuration. 
  - Step 3: Provide integration config by implementing one of the following methods.
-   - Manually updating integration config within Edge worker code
-   - Dynamically download and cache integration config
+   - 3.1 Manually updating integration config within Edge worker code
+   - 3.2 Dynamically download and cache integration config   
  - Step 4: Upload the Queue-it edge worker bundle
  - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
- - Step 6: In your Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
- - Step 7: Add a Site Failover behavior to retry if EdgeWorker fails
- - Step 8: Add integration config download criteria condition, behavior and cache if integration config download method is used.
- - Step 9: Deploy the updated Akamai Property configuration
+ - Step 6: In Akamai Propery, add queue-it required variables named as 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY' and 'PMUSER_QUEUEIT_API_KEY' optional if  'PMUSER_QUEUEIT_CONFIG_TYPE' is cache. Section 'QueueIT variables' describes queue-it varibles in details.
+ - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
+ - Step 8: Add a Site Failover behavior to retry if EdgeWorker fails
+ - Step 9: Add integration config download criteria condition, behavior and cache if integration config download method is used.
+ - Step 10: Deploy the updated Akamai Property configuration
 
 ** https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-53F43F70-BEBC-4BA4-A2FB-3F23A6125106.html 
 
@@ -39,13 +40,14 @@ When a user enter your website and the URL matches a Trigger-expression the corr
 The Action specifies which queue the users should be send to. 
 In this way you can specify which queue(s) should protect which page(s) on the fly without changing the server-side integration.
 
-This configuration can then be used in Edge Worker by two ways.
+This configuration can then be used in Edge Worker by three ways.
   
-#### Manually updating integration config within Edge worker code
-Latest integration config can be downloaded from Go platform and then updated by replacing "integrationConfig" variable value in integrationConfigProvider.js file.
+### 3.1 Manually updating integration config within Edge worker code
+Latest integration config can be downloaded from GO Queue-it Platform and then updated by replacing "inlineIntegrationConfig" variable value in integrationConfigProvider.js file.
+To use the inline integration config, set 'QUEUEIT_CONFIG_TYPE' queue-it variable value to 'inline' in akamai property manager.
 
-#### Dynamically download and cache integration config
-Integration config can be downloaded by calling Queue-IT API endpoint and then can be cached in Akamai network. Use [Customer API-Key] as request header and make sub call from Edgeworker to donwload the integration config. Configure the following Akamai property rules by setting the criteria and caching behavior to download and cache the integration config. 
+### 3.2 Dynamically download and cache integration config
+Integration config can be downloaded by calling Queue-IT API endpoint and then cached in Akamai network. In Akamai property manager, set variables 'PMUSER_QUEUEIT_CONFIG_TYPE' to 'cache' and 'PMUSER_QUEUEIT_API_KEY' to your API key. Configure the following Akamai property rules by setting the criteria, out going request path and caching behavior to download and cache the integration config.
 
 #### Edgeworker rule
 Define edgeworker rule in Akamai property and set criteria as illustrated in picture.
@@ -59,7 +61,19 @@ Define property rule to download integration config and add following configurat
 
 ![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadBehavior.PNG)
 
+![Download integration config Outgoing Path](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/outgoingRequestPath.PNG)
+
 ![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigCache.PNG)
+
+### QueueIT variables
+To integrate with QueueIT Akamai connector it is required to define queueit variables in your akamai property. These variables should be named as 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY', 'PMUSER_QUEUEIT_API_KEY' and of type 'Hidden' in akamai property manager. The following table describes the options for variable values.
+
+| Variable | Required | Value |
+| :---: | :---: | :---: |
+| PMUSER_QUEUEIT_CUSTOMERID | Yes | Find your Customer ID in the GO Queue-it Platform. |
+| PMUSER_QUEUEIT_SECRET_KEY | Yes | Find your Secret key in the GO Queue-it Platform. |
+| PMUSER_QUEUEIT_CONFIG_TYPE | Yes | 'inline' or 'cahce' |
+| PMUSER_QUEUEIT_API_KEY | If 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to cache  | Find your Api key in the GO Queue-it Platform. |
 
 ### Adding a Site Failover behaviour
 After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.

@@ -7,21 +7,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+/*INLINE config*/
+const inlineIntegrationConfig = 'IF YOU ARE USING INLINE CONFIGURATION: GET YOUR INTEGRATION CONFIG IN JSON FORMAT FROM GO QUEUE-IT PLATFORM AND PASTE IT HERE';
+/*INLINE config*/
 import { httpRequest } from 'http-request';
-//GET YOUR INTEGRATION CONFIG WITH JSON FORMAT FROM QEUEU_IT GO PLATFORM AND PAST IT HERE IF YOU ARE USING INLINE CONFIGURATION;
-const integrationConfig = '';
-export { IntegrationConfig };
-class IntegrationConfig {
+import { EdgeKV } from './lib/edgekv.js';
+export { IntegrationConfigProvider };
+class IntegrationConfigProvider {
 }
-IntegrationConfig.getIntegrationConfig = function (apiKey) {
+IntegrationConfigProvider.getIntegrationConfig = function (configType, apiKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (integrationConfig) {
-            return integrationConfig;
+        switch (configType.toLowerCase()) {
+            case 'inline':
+                return inlineIntegrationConfig;
+            case 'cache':
+                return IntegrationConfigProvider.getIntegrationConfigFromCache(apiKey);
+            case 'edgekv':
+                return IntegrationConfigProvider.getIntegrationConfigFromEdgeKV();
         }
+        return '';
+    });
+};
+IntegrationConfigProvider.getIntegrationConfigFromCache = function (apiKey) {
+    return __awaiter(this, void 0, void 0, function* () {
         const options = {};
         options.method = "GET";
         options.headers = { "api-key": apiKey };
-        options.timeout = 1000;
+        options.timeout = 950;
         return (yield httpRequest("/queueit/integrationconfig/", options)).text();
+    });
+};
+IntegrationConfigProvider.getIntegrationConfigFromEdgeKV = function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        let edgeKV = new EdgeKV("QueueIT", "integrations");
+        let result = yield edgeKV.requestHandlerTemplate(() => edgeKV.getRequest({ namespace: 'QueueIT', group: 'integrations', item: 'integrationConfig' }), (response) => response.text(), (response) => __awaiter(this, void 0, void 0, function* () { return yield edgeKV.streamText(response.body); }), "GET JSON string", null);
+        return result;
     });
 };
