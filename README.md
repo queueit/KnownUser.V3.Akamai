@@ -68,6 +68,7 @@ Define property rule to download integration config and add following configurat
 ![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigCache.PNG)
 
 ### 3.3 Push integration config to Akamai EdgeKV
+Before you start using Akamai edgekv to store and fetch integration config, make sure that you have entitlements for both EdgeKV products on contract.
 Integration config can be pushed and stored in Akamai EdgeKV from GO Queue-it Platform. Connector can fetch stored integration config from Edgekv by setting the 'PMUSER_QUEUEIT_CONFIG_TYPE' variable to 'edgekv' in Akamai property manager. Apply the following steps to setup and use integration config from EdgeKV in the connector.
 
 - Get access to Akamai EdgeKV and its API. Read details about EdgeKV in Akamai documentation.
@@ -75,6 +76,39 @@ Integration config can be pushed and stored in Akamai EdgeKV from GO Queue-it Pl
 - Update and publish integration config in GO Queue-it Platform.
 - Generate Akamai EdgeKV token from GO Queue-it Platform and copy into 'lib/edgekv_tokens.js' file in the connector code.
 - Push integration config to Akamai EdgeKV from GO Queue-it Platform. 
+
+#### Assign roles and permissions
+You need to assign roles to create and manage access to EdgeKV in Akamai Control Center.
+Administrator can add individual users, then create and assign roles and access rights. You can find detailed instructions for managing users, roles, and permissions in the Akamai Identity and Access Management online help.
+
+#### Set up authentication for an API client:
+- Create an API client with the necessary credential for a single Control Center account. This credential applies to all APIs for all products you currently have access to with that Control Center account.
+- Launch Identity and Access Management. In Control Center, you can navigate there by selecting → ACCOUNT ADMIN → Identity & access.
+- From the Users and API Clients tab, click New API client for me to open the Customize API client screen.
+- Click Quick to instantly create an API client with the necessary credential. This client’s API access levels, group roles, and permissions are identical to your current login.
+- You can verify the APIs you can access by clicking Show additional details. Enter the API service’s name in the Filter field to verify that it’s included and that you have the proper level of access.
+
+![Akamai API Client](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/AkamaiAPIClient.PNG)
+
+#### Generate API client credentials
+To make EdgeKV API calls over the Akamai network, you first need to generate API credentials. 
+
+- To use EdgeKV management APIs or the Edge KV CLI, the API credentials need to be created using the Admin role.
+- To add permissions to your API credentials go to the Account Admin > Identity & access section in Akamai Control Center.
+- On the Users and API Clients tab, use the search bar to find your Client Name and open the client details.
+- Click the Edit API client button and scroll down to the APIs section.
+- Click the Select APIs radio button and type edgekv in the search bar.
+- Select the EdgeKV API.
+- Select READ-WRITE from the Access Level dropdown and submit your changes.
+- Download the credentials from API client page in Akamai control center
+ 
+![Access Level Edgekv API](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/accessLevelEdgekvAPI.PNG)
+
+#### Akamai Settings in Go Queue-IT Platform
+EdgeKV API host url is required to store integration config and generate the EdgeKV token for edgeworker. Add host url in 'Web End Point' field on Integration => Overview => Settings page. 
+You can find Akamai host url from API client page in Akamai control center.
+
+![Akamai Host Settings](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/AkamaiHostSettings.PNG)
 
 #### Generate EdgeKV token
 Queue-IT connector needs Akamai EdgeKV API token to get integration config from EdgeKV. The token can also be generated using Akamai EdgeKV CLI/API. GO Queue-it Platform also has functionality to generate and retrieve EdgeKV tokens on a button click which reduce the complexity of using Akamai API/Cli. Currently, it is only possible to generate one token to use in both environments (staging/production). Default life time of the token is 6 months if generated from GO Queue-it Platform. Generate or retrieve the Akamai EdgeKV tokens by providing the required information in GO Queue-it Platform (on integration overview page).
