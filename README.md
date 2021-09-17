@@ -49,6 +49,7 @@ Latest integration config can be downloaded from GO Queue-it Platform and then u
 To use the inline integration config, set 'QUEUEIT_CONFIG_TYPE' queue-it variable value to 'inline' in Akamai property manager.
 
 ### 3.2 Dynamically download and cache integration config
+#### NOTE: If you are deploying to a staging environment that has an IP-filter applied, make sure to whitelist the path to the integration config, so the IP-filter doesn’t apply. Otherwise the Queue-it Edge Worker will be blocked from accessing the configuration path. 
 Integration config can be downloaded by calling Queue-IT API endpoint and then cached in Akamai network. In Akamai property manager, set variables 'PMUSER_QUEUEIT_CONFIG_TYPE' to 'cache' and 'PMUSER_QUEUEIT_API_KEY' to your API key. Configure the following Akamai property rules by setting the criteria, out going request path and caching behavior to download and cache the integration config.
 
 #### Edgeworker rule
