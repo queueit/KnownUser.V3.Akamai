@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "outDir",
+    "target": "ES2015",
+    "module": "es2015",
+    "typeRoots": [
+      "types",
+      "node_modules/@types"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": true
+  },
+  "exclude": [
+    "lib",
+    "outDir",
+    "gulpfile.cjs",
+    "test"
+  ]
+}

@@ -1,0 +1,40 @@
+[merge]
+	tool = kdiff3
+	guitool = kdiff3
+[diff]
+	guitool = kdiff3
+	tool = vsdiffmerge
+[core]
+	editor = \"F:/Program Files (x86)/GitExtensions/GitExtensions.exe\" fileeditor
+	autocrlf = false
+[user]
+	name = Vasil
+	email = vava@queue-it.com
+[pull]
+	rebase = false
+[fetch]
+	prune = false
+[rebase]
+	autoStash = false
+[winUpdater]
+	recentlySeenVersion = 2.26.1.windows.1
+[mergetool "kdiff3"]
+	path = C:/Program Files/KDiff3/kdiff3.exe
+	cmd = \"C:/Program Files/KDiff3/kdiff3.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+[difftool "kdiff3"]
+	path = C:/Program Files/KDiff3/kdiff3.exe
+	cmd = \"C:/Program Files/KDiff3/kdiff3.exe\" \"$LOCAL\" \"$REMOTE\"
+[url "git@git.smartmodule.net:"]
+	insteadOf = https://git.smartmodule.net/
+[difftool]
+	prompt = true
+[difftool "vsdiffmerge"]
+	cmd = \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\vsdiffmerge.exe\" \"$LOCAL\" \"$REMOTE\" //t
+	keepBackup = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[credential]
+	helper = "!f() { /root/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /tmp/vscode-remote-containers-9669530c1ddca4fa7b1438b95129151b954035ef.js $*; }; f"

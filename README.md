@@ -28,7 +28,11 @@ Installing the edge worker the first time requires uploading an archive file (TG
    - 3.3 Push integration config to Akamai EdgeKV   
  - Step 4: Upload the Queue-it edge worker bundle
  - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
- - Step 6: In Akamai Propery, add queue-it required variables named as 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY' and 'PMUSER_QUEUEIT_API_KEY' optional if  'PMUSER_QUEUEIT_CONFIG_TYPE' is cache. Section 'QueueIT variables' describes queue-it varibles in details.
+ - Step 6: In Akamai Propery, add queue-it required **hidden** variables named as 
+ 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY'
+  and if 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to `cache` then 
+   - 'PMUSER_QUEUEIT_API_KEY' set for the API key  
+   Section 'QueueIT variables' describes queue-it varibles in details.
  - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
  - Step 8: Add a Site Failover behavior to retry if EdgeWorker fails
  - Step 9: Add integration config download criteria condition, behavior and cache if integration config download method is used.
@@ -49,7 +53,7 @@ Latest integration config can be downloaded from GO Queue-it Platform and then u
 To use the inline integration config, set 'QUEUEIT_CONFIG_TYPE' queue-it variable value to 'inline' in Akamai property manager.
 
 ### 3.2 Dynamically download and cache integration config
-#### NOTE: If you are deploying to a staging environment that has an IP-filter applied, make sure to whitelist the path to the integration config, so the IP-filter doesn’t apply. Otherwise the Queue-it Edge Worker will be blocked from accessing the configuration path. 
+#### NOTE: If you are deploying to a staging environment that has an IP-filter applied, make sure to whitelist the path to the integration config, so the IP-filter doesn’t apply. Otherwise, the Queue-it Edge Worker will be blocked from accessing the configuration path. 
 Integration config can be downloaded by calling Queue-IT API endpoint and then cached in Akamai network. In Akamai property manager, set variables 'PMUSER_QUEUEIT_CONFIG_TYPE' to 'cache' and 'PMUSER_QUEUEIT_API_KEY' to your API key. Configure the following Akamai property rules by setting the criteria, out going request path and caching behavior to download and cache the integration config.
 
 #### Edgeworker rule
@@ -138,7 +142,9 @@ export { edgekv_access_tokens };
 ```
 
 ### QueueIT variables
-To integrate with QueueIT Akamai connector it is required to define queueit variables in your Akamai property. These variables should be named as 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY', 'PMUSER_QUEUEIT_API_KEY' and of type 'Hidden' in Akamai property manager. The following table describes the options for variable values.
+To integrate with QueueIT Akamai connector it is required to define queueit variables in your Akamai property.   
+These variables should be named as 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY', 'PMUSER_QUEUEIT_API_KEY' 
+and of type **Hidden** in Akamai property manager. The following table describes the options for variable values.
 
 | Variable | Required | Value |
 | :---: | :---: | :---: |
