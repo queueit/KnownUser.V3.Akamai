@@ -64,7 +64,7 @@ Define edgeworker rule in Akamai property and set criteria as illustrated in pic
 #### Download integration config rule
 Define property rule to download integration config and add following configuration illustrated in the pictures.
 
-![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadCriteria.PNG)
+![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDownloadCriteria.PNG)
 
 ![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigDonloadBehavior.PNG)
 
