@@ -1,6 +1,6 @@
 import crypto from './lib/sha256.js'
 
-const AKAMAI_SDK_VERSION = "3.0.1";
+const AKAMAI_SDK_VERSION = "3.0.2";
 
 export class QueueITHelper {
 

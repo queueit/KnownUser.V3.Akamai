@@ -14,6 +14,7 @@ const BIG_SET_COOKIE_VALUE = 'TOO_BIG_COOKIE';
 const QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME = 'x-queueit-connector';
 const QUEUEIT_FAILED_HEADERNAME = 'x-queueit-failed';
 const QUEUEIT_CONNECTOR_NAME = "akamai";
+const SHOULD_IGNORE_OPTIONS_REQUESTS = false;
 
 export async function onClientRequest(request) {
     try {
@@ -126,8 +127,7 @@ export async function onClientResponse(request, response) {
 }
 
 function isIgnored(request) {
-    return request.method === 'OPTIONS'
-        || request.method === 'HEAD';
+    return SHOULD_IGNORE_OPTIONS_REQUESTS && request.method === 'OPTIONS';
 }
 
 async function getQueueItToken(httpContext, requestUrl: string){

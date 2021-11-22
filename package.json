@@ -3,15 +3,13 @@
   "repository": "https://github.com/queueit/KnownUser.V3.Akamai",
   "license": "MIT",
   "main": "main.js",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "type": "module",
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "queueit-knownuser": "^3.7.4"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "prepare": {
     "queueit-knownuser/dist/index.js": {
       "command": "browserify",
