@@ -5,7 +5,7 @@ This Akamai Queue-it Connector SDK (aka, Queue-it’s server-side KnownUser conn
 
 A subscription / access to Akamai Edge Workers is required to utilize this connector, and Akamai resources and professional services should be consulted.
 
->You can find the latest released version and deployable bundle "QueueITAkamaiEdgeConnector.tgz" [here](https://github.com/queueit/KnownUser.V3.Akamai/releases/latest).
+>You can find the latest released version and deployable bundle "kuedge.tar.gz" [here](https://github.com/queueit/KnownUser.V3.Akamai/releases/latest).
 
 ## How it works
 ![Edge Worker Integration / Logical Flow](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/akamai_edge_worker_diagram_v0.2.png)
