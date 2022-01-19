@@ -1,11 +1,11 @@
-const {src, dest} = require("gulp");
+const { src, dest } = require("gulp");
 const tar = require('gulp-tar');
 const gzip = require('gulp-gzip');
 const modifyFile = require('gulp-modify-file');
 const jsonModify = require('gulp-json-modify')
 const path = require('path')
 
-function addExports(content) {
+function addKnownUserExports(content) {
     content = "var exportObject = {};\n" + content;
     content += `
 var Utils = exportObject.Utils;
@@ -21,18 +21,36 @@ export { KnownUser, Utils };`;
     ` + secondPart;
 }
 
+function addQueueTokenExports(content) {
+    content = "var exportObject = {};\n" + content;
+    content += `
+var Token = exportObject.Token;
+var Payload = exportObject.Payload;
+export { Payload, Token };`;
+    const tokenPropertyDefinition = content.indexOf('Object.defineProperty(exports, "Token"');
+    const newLine = content.indexOf('},', tokenPropertyDefinition);
+    const firstPart = content.substring(0, newLine - 2);
+    const secondPart = content.substring(newLine - 1);
+    return firstPart + `
+        exportObject.Payload = Payload_1.Payload;
+        exportObject.Token = Token_1.Token;
+    ` + secondPart;
+}
+
 exports.packageArtifacts = () => {
     return src([
         'bundle.json',
-        'outDir/*.js',
-        'outDir/**/*.js'
+        'dist/*.js',
+        'dist/**/*.js'
     ])
         .pipe(modifyFile((content, filePath, _) => {
             let filename = path.basename(filePath);
-            if (filename !== 'queueit-knownuserv3-sdk.js') {
-                return content;
+            if (filename === 'queueit-knownuserv3-sdk.js') {
+                content = addKnownUserExports(content);
             }
-            content = addExports(content);
+            if (filename === 'queueToken.js') {
+                content = addQueueTokenExports(content);
+            }
             return content;
         }))
         .pipe(tar('kuedge.tar'))
@@ -46,19 +64,21 @@ exports.prepare = () => {
     ])
         .pipe(modifyFile((content, filePath, _) => {
             let filename = path.basename(filePath);
-            if (filename !== 'queueit-knownuserv3-sdk.js') {
-                return content;
+            if (filename === 'queueit-knownuserv3-sdk.js') {
+                content = addKnownUserExports(content);
             }
-            content = addExports(content);
+            if (filename === 'queueToken.js') {
+                content = addQueueTokenExports(content);
+            }
             return content;
         }))
-        .pipe(dest('outDir/sdk'));
+        .pipe(dest('dist/sdk'));
 }
 
 exports.stripPackage = () => {
     return src(['./package.json'])
-        .pipe(jsonModify({ key: 'devDependencies', value: {}}))
-        .pipe(jsonModify({ key: 'scripts', value: {}}))
+        .pipe(jsonModify({ key: 'devDependencies', value: {} }))
+        .pipe(jsonModify({ key: 'scripts', value: {} }))
         .pipe(dest('./'))
 }
 
@@ -66,15 +86,17 @@ exports.packageForDeployment = () => {
     return src([
         'bundle.json',
         'edgegrid.edgerc',
-        'outDir/*.js',
-        'outDir/**/*.js'
+        'dist/*.js',
+        'dist/**/*.js'
     ])
         .pipe(modifyFile((content, filePath, _) => {
             let filename = path.basename(filePath);
-            if (filename !== 'queueit-knownuserv3-sdk.js') {
-                return content;
+            if (filename === 'queueit-knownuserv3-sdk.js') {
+                content = addKnownUserExports(content);
             }
-            content = addExports(content);
+            if (filename === 'queueToken.js') {
+                content = addQueueTokenExports(content);
+            }
             return content;
         }))
         .pipe(tar('kuedge.deployment.tar'))

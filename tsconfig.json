@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "outDir": "outDir",
+    "outDir": "dist",
     "target": "ES2015",
     "module": "es2015",
     "typeRoots": [
@@ -16,7 +16,7 @@
   },
   "exclude": [
     "lib",
-    "outDir",
+    "dist",
     "gulpfile.cjs",
     "test"
   ]

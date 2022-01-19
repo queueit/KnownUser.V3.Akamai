@@ -1,12 +1,12 @@
 /// <reference path="./types/akamai.d.ts"/>
 
-import {AkamaiHttpContextProvider} from './akamaiHttpContextProvider.js';
-import {KnownUser, Utils} from './sdk/queueit-knownuserv3-sdk.js';
-import {QueueITHelper, SettingException, Settings} from './queueitHelpers.js';
-import {IntegrationConfigProvider} from './integrationConfigProvider.js';
+import { AkamaiContextProvider } from './akamaiContextProvider.js';
+import { KnownUser } from './sdk/queueit-knownuserv3-sdk.js';
+import { QueueITHelper, SettingException, Settings } from './QueueITHelpers.js';
+import { IntegrationConfigProvider } from './integrationConfigProvider.js';
 
 // @ts-ignore
-import {logger} from 'log';
+import { logger } from 'log';
 
 const COOKIE_VARIABLE_NAME = 'PMUSER_QUEUEIT_C';
 const ERROR_VARIABLE_NAME = 'PMUSER_QUEUEIT_ER';
@@ -22,9 +22,7 @@ export async function onClientRequest(request) {
             return;
         }
 
-        QueueITHelper.configureKnownUserHashing(Utils);
-
-        let httpContext = new AkamaiHttpContextProvider(request, {
+        let httpContext = new AkamaiContextProvider(request, {
             storeCookie: function (cookieString) {
                 if (cookieString.length < 800) {
                     request.setVariable(COOKIE_VARIABLE_NAME, cookieString);
@@ -34,7 +32,13 @@ export async function onClientRequest(request) {
             }
         });
         const settings = QueueITHelper.getSettingsFromPMVariables(request);
-        let {queueitToken, requestUrlWithoutToken, validationResult} = await validateRequest(httpContext, settings);
+        httpContext.setEnqueueTokenProvider(
+            settings,
+            60000,
+            httpContext.getHttpRequest().getUserHostAddress()
+        );
+
+        let { queueitToken, requestUrlWithoutToken, validationResult } = await validateRequest(httpContext, settings);
 
         if (validationResult.doRedirect()) {
             // Adding no cache headers to prevent browsers to cache requests
@@ -94,7 +98,7 @@ export async function onClientResponse(request, response) {
         if (cookieString && cookieString !== BIG_SET_COOKIE_VALUE) {
             response.addHeader('Set-Cookie', cookieString);
         } else if (cookieString == BIG_SET_COOKIE_VALUE) {
-            let httpContext = new AkamaiHttpContextProvider(request, {
+            let httpContext = new AkamaiContextProvider(request, {
                 storeCookie: function (cookieString) {
                     response.addHeader('Set-Cookie', cookieString);
                 }
@@ -130,9 +134,9 @@ function isIgnored(request) {
     return SHOULD_IGNORE_OPTIONS_REQUESTS && request.method === 'OPTIONS';
 }
 
-async function getQueueItToken(httpContext, requestUrl: string){
+async function getQueueItToken(httpContext, requestUrl: string) {
     let queueitToken = QueueITHelper.getParameterByName(KnownUser.QueueITTokenKey, requestUrl);
-    if(queueitToken){
+    if (queueitToken) {
         return queueitToken;
     }
 
@@ -154,7 +158,7 @@ async function validateRequest(httpContext, settings: Settings) {
         requestUrl, queueitToken, integrationConfig,
         settings.CustomerId, settings.SecretKey, httpContext);
 
-    return {queueitToken, requestUrlWithoutToken, validationResult};
+    return { queueitToken, requestUrlWithoutToken, validationResult };
 }
 
 
