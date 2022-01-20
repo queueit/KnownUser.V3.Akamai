@@ -152,6 +152,7 @@ and of type **Hidden** in Akamai property manager. The following table describes
 | PMUSER_QUEUEIT_SECRET_KEY | Yes | Find your Secret key in the GO Queue-it Platform. |
 | PMUSER_QUEUEIT_CONFIG_TYPE | Yes | 'inline' or 'cahce' or 'edgekv' |
 | PMUSER_QUEUEIT_API_KEY | If 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to cache  | Find your Api key in the GO Queue-it Platform. |
+| PMUSER_QUEUEIT_EVALUATED | For validation that the Queue-It EdgeWorker was executed | The Queue-It EdgeWorker will set the variable to `true`. This variable can be used in Akamai Property Manager to apply alternative logic if the EdgeWorker was not executed. | 
 
 ### Adding a Site Failover behaviour
 After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
