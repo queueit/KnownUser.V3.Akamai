@@ -10,6 +10,7 @@ import { logger } from 'log';
 
 const COOKIE_VARIABLE_NAME = 'PMUSER_QUEUEIT_C';
 const ERROR_VARIABLE_NAME = 'PMUSER_QUEUEIT_ER';
+const EVALUATED_VARIABLE_NAME = 'PMUSER_QUEUEIT_EVALUATED';
 const BIG_SET_COOKIE_VALUE = 'TOO_BIG_COOKIE';
 const QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME = 'x-queueit-connector';
 const QUEUEIT_FAILED_HEADERNAME = 'x-queueit-failed';
@@ -18,6 +19,8 @@ const SHOULD_IGNORE_OPTIONS_REQUESTS = false;
 
 export async function onClientRequest(request) {
     try {
+        // Set PMUSER variable to allow validation that EdgeWorker was executed
+        request.setVariable(EVALUATED_VARIABLE_NAME, 'true');
         if (isIgnored(request)) {
             return;
         }
