@@ -150,7 +150,7 @@ and of type **Hidden** in Akamai property manager. The following table describes
 | :---: | :---: | :---: |
 | PMUSER_QUEUEIT_CUSTOMERID | Yes | Find your Customer ID in the GO Queue-it Platform. |
 | PMUSER_QUEUEIT_SECRET_KEY | Yes | Find your Secret key in the GO Queue-it Platform. |
-| PMUSER_QUEUEIT_CONFIG_TYPE | Yes | 'inline' or 'cahce' or 'edgekv' |
+| PMUSER_QUEUEIT_CONFIG_TYPE | Yes | 'inline' or 'cache' or 'edgekv' |
 | PMUSER_QUEUEIT_API_KEY | If 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to cache  | Find your Api key in the GO Queue-it Platform. |
 
 ### Adding a Site Failover behaviour
