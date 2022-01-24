@@ -28,7 +28,7 @@ export class AkamaiContextProvider implements IConnectorContextProvider {
     public setEnqueueTokenProvider(
         setting: Settings,
         validityTime: Number,
-        clientIp?: string,
+        clientIp: string,
         customData?: any) {
 
         if (!setting || validityTime < -1) {
@@ -45,9 +45,6 @@ export class AkamaiContextProvider implements IConnectorContextProvider {
     }
 
     public getEnqueueTokenProvider() {
-        if (!this._enqueueTokenProvider) {
-            throw new Error('EnqueueTokenProvider is not set!');
-        }
         return this._enqueueTokenProvider;
     }
 

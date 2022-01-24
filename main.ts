@@ -15,9 +15,14 @@ const QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME = 'x-queueit-connector';
 const QUEUEIT_FAILED_HEADERNAME = 'x-queueit-failed';
 const QUEUEIT_CONNECTOR_NAME = "akamai";
 const SHOULD_IGNORE_OPTIONS_REQUESTS = false;
+const SHOULD_INCLUDE_ENQUEUETOKEN = false;
+const EXECUTED_VARIABLE_NAME = 'PMUSER_QUEUEIT_EXECUTED';
 
 export async function onClientRequest(request) {
     try {
+        // Set PMUSER variable to allow validation that EdgeWorker was executed
+        request.setVariable(EXECUTED_VARIABLE_NAME, 'true');
+
         if (isIgnored(request)) {
             return;
         }
@@ -32,11 +37,14 @@ export async function onClientRequest(request) {
             }
         });
         const settings = QueueITHelper.getSettingsFromPMVariables(request);
-        httpContext.setEnqueueTokenProvider(
-            settings,
-            60000,
-            httpContext.getHttpRequest().getUserHostAddress()
-        );
+
+        if (includeEnqueueToken()) {
+            httpContext.setEnqueueTokenProvider(
+                settings,
+                60000,
+                httpContext.getHttpRequest().getUserHostAddress()
+            );
+        }
 
         let { queueitToken, requestUrlWithoutToken, validationResult } = await validateRequest(httpContext, settings);
 
@@ -132,6 +140,10 @@ export async function onClientResponse(request, response) {
 
 function isIgnored(request) {
     return SHOULD_IGNORE_OPTIONS_REQUESTS && request.method === 'OPTIONS';
+}
+
+function includeEnqueueToken() {
+    return SHOULD_INCLUDE_ENQUEUETOKEN;
 }
 
 async function getQueueItToken(httpContext, requestUrl: string) {

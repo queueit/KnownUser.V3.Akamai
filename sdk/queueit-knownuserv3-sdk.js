@@ -879,8 +879,9 @@ var UserInQueueService = /** @class */ (function () {
         return new Models_1.RequestValidationResult(Models_1.ActionTypes.QueueAction, config.eventId, null, redirectUrl, null, config.actionName);
     };
     UserInQueueService.prototype.getQueueResult = function (targetUrl, config, customerId) {
+        var _a;
         var enqueueToken = this.contextProvider.getEnqueueTokenProvider
-            && this.contextProvider.getEnqueueTokenProvider().getEnqueueToken(config.eventId);
+            && ((_a = this.contextProvider.getEnqueueTokenProvider()) === null || _a === void 0 ? void 0 : _a.getEnqueueToken(config.eventId));
         var query = this.getQueryString(customerId, config.eventId, config.version, config.culture, config.layoutName, config.actionName, null, enqueueToken) +
             (targetUrl ? "&t=" + QueueITHelpers_1.Utils.encodeUrl(targetUrl) : "");
         var redirectUrl = this.generateRedirectUrl(config.queueDomain, "", query);
