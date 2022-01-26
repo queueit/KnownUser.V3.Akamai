@@ -7,16 +7,6 @@ A subscription / access to Akamai Edge Workers is required to utilize this conne
 
 >You can find the latest released version and deployable bundle "kuedge.tar.gz" [here](https://github.com/queueit/KnownUser.V3.Akamai/releases/latest).
 
-## How it works
-![Edge Worker Integration / Logical Flow](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/akamai_edge_worker_diagram_v0.2.png)
-
- 1. User requests a page on your server
- 2. Upon first request of a protected page, the validation method will see that there is no Queue-it session cookie and no `queueittoken` and send the user to the correct queue based on the configuration
- 3. User waits in the queue
- 4. User is redirected back to your website, now with a `queueittoken`
- 5. The validation method validates the `queueittoken` and creates a Queue-it session cookie
- 6. The user browses to a new page and the presence of a valid Queue-it session cookie prevent a return to the queue
-
 ## Installation
 ### Note: EdgeWorker should be created using the Dynamic Compute resource tier.
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
@@ -158,19 +148,6 @@ and of type **Hidden** in Akamai property manager. The following table describes
 After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
 
 ![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover.PNG)
-
-## Protecting AJAX calls
-If you need to protect AJAX calls beside page loads you need to add the below JavaScript tags to your pages:
-```
-<script type="text/javascript" src="//static.queue-it.net/script/queueclient.min.js"></script>
-<script
- data-queueit-intercept-domain="{YOUR_CURRENT_DOMAIN}"
-   data-queueit-intercept="true"
-  data-queueit-c="{YOUR_CUSTOMER_ID}"
-  type="text/javascript"
-  src="//static.queue-it.net/script/queueconfigloader.min.js">
-</script>
-```
 
 ### Using EnQueueToken
 A token could be used for queueing the users. This makes it even more protected. The token will be included when the user is redirected from Akamai to the queue and vice versa. [QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
