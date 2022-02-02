@@ -147,11 +147,11 @@ and of type **Hidden** in Akamai property manager. The following table describes
 ### Adding a Site Failover behaviour
 EdgeWorks may fail to execute, the first time they are run on an EdgeServer, so it is recommended to add a Site Failover behaviour to perform a retry when the EdgeWorker execution fails.
 
-First, create a PM_USER variable, with an arbitrary name, and set the value to %(AK_HOST):
+First, create a PMUSER variable, with an arbitrary name, and set the value to %(AK_HOST):
 
-![Site Failover PM_USER Variable](failover1.png)
+![Site Failover PMUSER Variable](failover1.png)
 
-Then add a Site Failover behaviour that uses the PM_USER variable from above, and has the following settings:
+Then add a Site Failover behaviour that uses the PMUSER variable from above, and has the following settings:
 ![Site Failover Behaviour](failover2.png)
 
 ### Using EnQueueToken
