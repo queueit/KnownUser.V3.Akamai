@@ -145,9 +145,13 @@ and of type **Hidden** in Akamai property manager. The following table describes
 | PMUSER_QUEUEIT_EXECUTED | For validation that the Queue-It EdgeWorker was executed | The Queue-It EdgeWorker will set the variable to `true`. This variable can be used in Akamai Property Manager to apply alternative logic if the EdgeWorker was not executed. | 
 
 ### Adding a Site Failover behaviour
-After the EdgeWokrewr behaviour you need to add a Site Failover to do a retry if EW fails.
+EdgeWorks may fail to execute, the first time they are run on an EdgeServer, so it is recommended to add a Site Failover behaviour to perform a retry when the EdgeWorker execution fails.
 
-![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover.PNG)
+First, create a PM_USER variable, with an arbitrary name, and set the value to %(AK_HOST):
+![Site Failover PM_USER Variable](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover1.png)
+
+Then add a Site Failover behaviour that uses the PM_USER variable from above, and has the following settings:
+![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover2.png)
 
 ### Using EnQueueToken
 A token could be used for queueing the users. This makes it even more protected. The token will be included when the user is redirected from Akamai to the queue and vice versa. [QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
