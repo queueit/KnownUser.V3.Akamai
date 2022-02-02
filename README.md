@@ -148,10 +148,10 @@ and of type **Hidden** in Akamai property manager. The following table describes
 EdgeWorks may fail to execute, the first time they are run on an EdgeServer, so it is recommended to add a Site Failover behaviour to perform a retry when the EdgeWorker execution fails.
 
 First, create a PM_USER variable, with an arbitrary name, and set the value to %(AK_HOST):
-![Site Failover PM_USER Variable](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover1.png)
+![Site Failover PM_USER Variable](failover1.png)
 
 Then add a Site Failover behaviour that uses the PM_USER variable from above, and has the following settings:
-![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/failover2.png)
+![Site Failover Behaviour](failover2.png)
 
 ### Using EnQueueToken
 A token could be used for queueing the users. This makes it even more protected. The token will be included when the user is redirected from Akamai to the queue and vice versa. [QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
