@@ -62,6 +62,8 @@ Define property rule to download integration config and add following configurat
 
 ![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/integrationConfigCache.png)
 
+![Download integration config cache prefresh](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/AkamaiCachePrefreshing.PNG)
+
 ### 3.3 Push integration config to Akamai EdgeKV
 Before you start using Akamai edgekv to store and fetch integration config, make sure that you have entitlements for both EdgeKV products on contract.
 Integration config can be pushed and stored in Akamai EdgeKV from GO Queue-it Platform. Connector can fetch stored integration config from Edgekv by setting the 'PMUSER_QUEUEIT_CONFIG_TYPE' variable to 'edgekv' in Akamai property manager. Apply the following steps to setup and use integration config from EdgeKV in the connector.
