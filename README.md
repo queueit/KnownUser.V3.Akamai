@@ -49,18 +49,18 @@ Integration config can be downloaded by calling Queue-IT API endpoint and then c
 #### Edgeworker rule
 Define edgeworker rule in Akamai property and set criteria as illustrated in picture.
 
-![Edge worker criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/edgeworkerCriteria.png)
+![Edge worker criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/edgeworkerCriteria.png)
 
 #### Download integration config rule
 Define property rule to download integration config and add following configuration illustrated in the pictures.
 
-![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/integrationConfigDownloadCriteria.png)
+![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/integrationConfigDownloadCriteria.png)
 
-![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/integrationConfigDonloadBehavior.png)
+![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/integrationConfigDonloadBehavior.png)
 
-![Download integration config Outgoing Path](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/outgoingRequestPath.png)
+![Download integration config Outgoing Path](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/outgoingRequestPath.png)
 
-![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/integrationConfigCache.png)
+![Download integration config cache](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/integrationConfigCache.png)
 
 ![Download integration config cache prefresh](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/cachePrefreshing.png)
 
@@ -85,7 +85,7 @@ Administrator can add individual users, then create and assign roles and access 
 - Click Quick to instantly create an API client with the necessary credential. This client’s API access levels, group roles, and permissions are identical to your current login.
 - You can verify the APIs you can access by clicking Show additional details. Enter the API service’s name in the Filter field to verify that it’s included and that you have the proper level of access.
 
-![Akamai API Client](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/apiClient.png)
+![Akamai API Client](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/apiClient.png)
 
 #### Generate API client credentials
 To make EdgeKV API calls over the Akamai network, you first need to generate API credentials. 
@@ -99,26 +99,26 @@ To make EdgeKV API calls over the Akamai network, you first need to generate API
 - Select READ-WRITE from the Access Level dropdown and submit your changes.
 - Download the credentials from API client page in Akamai control center
  
-![Access Level Edgekv API](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/accessLevelEdgekvAPI.png)
+![Access Level Edgekv API](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/accessLevelEdgekvAPI.png)
 
 #### Akamai Settings in Go Queue-IT Platform
 EdgeKV API host url is required to store integration config and generate the EdgeKV token for edgeworker. Add host url in 'Web End Point' field on Integration => Overview => Settings page. 
 You can find Akamai host url from API client page in Akamai control center.
 
-![Akamai Host Settings](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/hostSettings.png)
+![Akamai Host Settings](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/hostSettings.png)
 
 #### Generate EdgeKV token
 Queue-IT connector needs Akamai EdgeKV API token to get integration config from EdgeKV. The token can also be generated using Akamai EdgeKV CLI/API. GO Queue-it Platform also has functionality to generate and retrieve EdgeKV tokens on a button click which reduce the complexity of using Akamai API/Cli. Currently, it is only possible to generate one token to use in both environments (staging/production). Default life time of the token is 6 months if generated from GO Queue-it Platform. Generate or retrieve the Akamai EdgeKV tokens by providing the required information in GO Queue-it Platform (on integration overview page).
 
 ##### Important Note: Remember to generate new token before existing one expires and update the 'lib/edgekv_tokens.js' file.
 
-![Retrieve token](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/pushConfigForm.png)
-![Generate token](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/generateToken.png)
+![Retrieve token](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/pushConfigForm.png)
+![Generate token](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/generateToken.png)
 
 #### Push integration config
 Integration config can be pushed to Akamai EdgeKV from GO Queue-it Platform by providing Akamai client credentials and environment. This process will initialize the EdgeKV if it is not initialized and then create namespace "QueueIT", group "integrations" and item "integrationConfig" in EdgeKV to store integration config. Following picture shows the required information to push the integration config.
 
-![Akamai Push Config Form](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/pushConfigForm.png)
+![Akamai Push Config Form](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/pushConfigForm.png)
 
 #### Update token in edgeworker bundle
 Copy the valid token name and value from GO Queue-it Platform and update 'lib/edgekv_tokens.js' file in Edgeworker code bundle to get integration config from EdgeKV.
@@ -151,10 +151,10 @@ EdgeWorks may fail to execute, the first time they are run on an EdgeServer, so 
 
 First, create a PMUSER variable, with an arbitrary name, and set the value to %(AK_HOST):
 
-![Site Failover PMUSER Variable](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/failover1.png)
+![Site Failover PMUSER Variable](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/failover1.png)
 
 Then add a Site Failover behaviour that uses the PMUSER variable from above, and has the following settings:
-![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/main/documentation/failover2.png)
+![Site Failover Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/failover2.png)
 
 ### Using EnQueueToken
 A token could be used for queueing the users. This makes it even more protected. The token will be included when the user is redirected from Akamai to the queue and vice versa. [QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
