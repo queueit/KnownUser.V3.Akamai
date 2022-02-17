@@ -9,7 +9,8 @@ A subscription / access to Akamai Edge Workers is required to utilize this conne
 
 ## Installation
 
-_Note: EdgeWorker should be created using the Dynamic Compute resource tier._
+**Note: EdgeWorker should be created using the Dynamic Compute resource tier.**
+
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
  - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
  - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish the Configuration. 
@@ -17,12 +18,11 @@ Installing the edge worker the first time requires uploading an archive file (TG
  - Step 4: Upload the Queue-it edge worker bundle
  - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
  - Step 6: In Akamai Propery, add queue-it required **hidden** variables named as 
- 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_SECRET_KEY'
-  and if 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to `cache` then 
-   - 'PMUSER_QUEUEIT_API_KEY' set for the API key  
-   Section 'QueueIT variables' describes queue-it varibles in details.
+   - 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_SECRET_KEY', 
+   - 'PMUSER_QUEUEIT_CONFIG_TYPE' and 'PMUSER_QUEUEIT_API_KEY'
+   - **Section [QueueIT variables](#queueit-variables) describes queue-it varibles in details.**
  - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
- - Step 8: Add a Site Failover behavior to retry if EdgeWorker fails
+ - [Step 8: Add a Site Failover behavior to retry if EdgeWorker fails](#adding-a-site-failover-behaviour)
  - Step 9: Add integration config download criteria condition, behavior and cache if integration config download method is used.
  - Step 10: Deploy the updated Akamai Property configuration
 
