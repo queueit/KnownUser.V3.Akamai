@@ -18,9 +18,8 @@ Installing the edge worker the first time requires uploading an archive file (TG
  - Step 4: Upload the Queue-it edge worker bundle
  - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
  - Step 6: In Akamai Propery, add queue-it required **hidden** variables named as 
-   - 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_SECRET_KEY', 
-   - 'PMUSER_QUEUEIT_CONFIG_TYPE' and 'PMUSER_QUEUEIT_API_KEY'
-   - **Section [QueueIT variables](#queueit-variables) describes queue-it varibles in details.**
+   - 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_SECRET_KEY', 'PMUSER_QUEUEIT_CONFIG_TYPE' and 'PMUSER_QUEUEIT_API_KEY'
+   - **Section [QueueIT variables](#queueit-variables) describes queue-it variables in detail.**
  - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
  - [Step 8: Add a Site Failover behavior to retry if EdgeWorker fails](#adding-a-site-failover-behaviour)
  - Step 9: Add integration config download criteria condition, behavior and cache if integration config download method is used.
