@@ -13,7 +13,7 @@ _Note: EdgeWorker should be created using the Dynamic Compute resource tier._
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
  - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
  - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish the Configuration. 
- - Step 3: Provide integration config [READ MORE](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/IntegrationConfig.md)
+ - [Step 3: Provide integration config](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/IntegrationConfig.md)
  - Step 4: Upload the Queue-it edge worker bundle
  - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
  - Step 6: In Akamai Propery, add queue-it required **hidden** variables named as 
