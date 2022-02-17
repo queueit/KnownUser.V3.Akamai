@@ -6,11 +6,11 @@ In this way you can specify which queue(s) should protect which page(s) on the f
 
 This configuration can then be used in Edge Worker by three ways.
   
-## 3.1 Manually updating integration config within Edge worker code
+## 1 Manually updating integration config within Edge worker code
 Latest integration config can be downloaded from GO Queue-it Platform and then updated by replacing "inlineIntegrationConfig" variable value in integrationConfigProvider.js file.
 To use the inline integration config, set 'QUEUEIT_CONFIG_TYPE' queue-it variable value to 'inline' in Akamai property manager.
 
-## 3.2 Dynamically download and cache integration config
+## 2 Dynamically download and cache integration config
 ### NOTE: If you are deploying to a staging environment that has an IP-filter applied, make sure to whitelist the path to the integration config, so the IP-filter doesn’t apply. Otherwise, the Queue-it Edge Worker will be blocked from accessing the configuration path. 
 Integration config can be downloaded by calling Queue-IT API endpoint and then cached in Akamai network. In Akamai property manager, set variables 'PMUSER_QUEUEIT_CONFIG_TYPE' to 'cache' and 'PMUSER_QUEUEIT_API_KEY' to your API key. Configure the following Akamai property rules by setting the criteria, out going request path and caching behavior to download and cache the integration config.
 
@@ -32,7 +32,7 @@ Define property rule to download integration config and add following configurat
 
 ![Download integration config cache prefresh](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/cachePrefreshing.png)
 
-## 3.3 Push integration config to Akamai EdgeKV
+## 3 Push integration config to Akamai EdgeKV
 Before you start using Akamai edgekv to store and fetch integration config, make sure that you have entitlements for both EdgeKV products on contract.
 Integration config can be pushed and stored in Akamai EdgeKV from GO Queue-it Platform. Connector can fetch stored integration config from Edgekv by setting the 'PMUSER_QUEUEIT_CONFIG_TYPE' variable to 'edgekv' in Akamai property manager. Apply the following steps to setup and use integration config from EdgeKV in the connector.
 
