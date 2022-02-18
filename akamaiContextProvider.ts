@@ -3,7 +3,7 @@ import { Cookies } from 'cookies';
 import { IConnectorContextProvider, ICryptoProvider, IEnqueueTokenProvider, IHttpRequest, IHttpResponse } from 'queueit-knownuser';
 import { AkamaiCryptoProvider } from './akamaiCryptoProvider.js';
 import { AkamaiEnqueueTokenProvider } from './akamaiEnqueueTokenProvider.js';
-import { Settings } from './QueueITHelpers';
+import { Settings } from './queueitHelpers.js';
 
 export class AkamaiContextProvider implements IConnectorContextProvider {
     private _httpRequest: IHttpRequest;

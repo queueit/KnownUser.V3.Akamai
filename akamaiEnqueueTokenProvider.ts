@@ -1,5 +1,5 @@
 import { IEnqueueTokenProvider } from "queueit-knownuser";
-import { QueueITHelper, Settings } from "./QueueITHelpers.js";
+import { QueueITHelper, Settings } from "./queueitHelpers.js";
 import { Token, Payload } from "./sdk/queueToken.js";
 
 export class AkamaiEnqueueTokenProvider implements IEnqueueTokenProvider {

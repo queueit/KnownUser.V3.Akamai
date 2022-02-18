@@ -24,7 +24,7 @@ class IntegrationConfigProvider {
         const options: any = {}
         options.method = "GET";
         options.headers = { "api-key": apiKey };
-        options.timeout = 950;
+        options.timeout = 1400;
         return (await httpRequest("/queueit/integrationconfig/", options)).text();
     }
     private static getIntegrationConfigFromEdgeKV = async function () {

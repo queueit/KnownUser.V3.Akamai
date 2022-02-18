@@ -2,7 +2,7 @@
 
 import { AkamaiContextProvider } from './akamaiContextProvider.js';
 import { KnownUser } from './sdk/queueit-knownuserv3-sdk.js';
-import { QueueITHelper, SettingException, Settings } from './QueueITHelpers.js';
+import { QueueITHelper, SettingException, Settings } from './queueitHelpers.js';
 import { IntegrationConfigProvider } from './integrationConfigProvider.js';
 
 // @ts-ignore
@@ -10,24 +10,23 @@ import { logger } from 'log';
 
 const COOKIE_VARIABLE_NAME = 'PMUSER_QUEUEIT_C';
 const ERROR_VARIABLE_NAME = 'PMUSER_QUEUEIT_ER';
+const EXECUTED_VARIABLE_NAME = 'PMUSER_QUEUEIT_EXECUTED';
 const BIG_SET_COOKIE_VALUE = 'TOO_BIG_COOKIE';
 const QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME = 'x-queueit-connector';
 const QUEUEIT_FAILED_HEADERNAME = 'x-queueit-failed';
 const QUEUEIT_CONNECTOR_NAME = "akamai";
-const SHOULD_IGNORE_OPTIONS_REQUESTS = false;
-const SHOULD_INCLUDE_ENQUEUETOKEN = false;
-const EXECUTED_VARIABLE_NAME = 'PMUSER_QUEUEIT_EXECUTED';
 
 export async function onClientRequest(request) {
     try {
         // Set PMUSER variable to allow validation that EdgeWorker was executed
         request.setVariable(EXECUTED_VARIABLE_NAME, 'true');
 
-        if (isIgnored(request)) {
+        const settings = QueueITHelper.getSettingsFromPMVariables(request);
+        if (isIgnored(request, settings)) {
             return;
         }
 
-        let httpContext = new AkamaiContextProvider(request, {
+        let contextProvider = new AkamaiContextProvider(request, {
             storeCookie: function (cookieString) {
                 if (cookieString.length < 800) {
                     request.setVariable(COOKIE_VARIABLE_NAME, cookieString);
@@ -36,17 +35,16 @@ export async function onClientRequest(request) {
                 }
             }
         });
-        const settings = QueueITHelper.getSettingsFromPMVariables(request);
 
-        if (includeEnqueueToken()) {
-            httpContext.setEnqueueTokenProvider(
+        if (settings.GenerateEnqueueToken) {
+            contextProvider.setEnqueueTokenProvider(
                 settings,
                 60000,
-                httpContext.getHttpRequest().getUserHostAddress()
+                contextProvider.getHttpRequest().getUserHostAddress()
             );
         }
 
-        let { queueitToken, requestUrlWithoutToken, validationResult } = await validateRequest(httpContext, settings);
+        let { queueitToken, requestUrlWithoutToken, validationResult } = await validateRequest(contextProvider, settings);
 
         if (validationResult.doRedirect()) {
             // Adding no cache headers to prevent browsers to cache requests
@@ -98,7 +96,8 @@ export async function onClientResponse(request, response) {
     try {
         response.addHeader(QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME, QUEUEIT_CONNECTOR_NAME);
 
-        if (isIgnored(request)) {
+        let settings = QueueITHelper.getSettingsFromPMVariables(request);
+        if (isIgnored(request, settings)) {
             return;
         }
 
@@ -106,14 +105,13 @@ export async function onClientResponse(request, response) {
         if (cookieString && cookieString !== BIG_SET_COOKIE_VALUE) {
             response.addHeader('Set-Cookie', cookieString);
         } else if (cookieString == BIG_SET_COOKIE_VALUE) {
-            let httpContext = new AkamaiContextProvider(request, {
+            let contextProvider = new AkamaiContextProvider(request, {
                 storeCookie: function (cookieString) {
                     response.addHeader('Set-Cookie', cookieString);
                 }
             });
             //cookie value was big so re-evaluating to be able to set the cookie on the response
-            let settings = QueueITHelper.getSettingsFromPMVariables(request);
-            await validateRequest(httpContext, settings);
+            await validateRequest(contextProvider, settings);
         }
 
         let error = request.getVariable(ERROR_VARIABLE_NAME);
@@ -138,27 +136,23 @@ export async function onClientResponse(request, response) {
     }
 }
 
-function isIgnored(request) {
-    return SHOULD_IGNORE_OPTIONS_REQUESTS && request.method === 'OPTIONS';
+function isIgnored(request, settings: Settings) {
+    return request.method === 'OPTIONS' && settings.IgnoreOptionsRequests;
 }
 
-function includeEnqueueToken() {
-    return SHOULD_INCLUDE_ENQUEUETOKEN;
-}
-
-async function getQueueItToken(httpContext, requestUrl: string) {
+async function getQueueItToken(contextProvider: AkamaiContextProvider, requestUrl: string) {
     let queueitToken = QueueITHelper.getParameterByName(KnownUser.QueueITTokenKey, requestUrl);
     if (queueitToken) {
         return queueitToken;
     }
 
     const tokenHeaderName = `x-${KnownUser.QueueITTokenKey}`;
-    return httpContext.getHttpRequest().getHeader(tokenHeaderName);
+    return contextProvider.getHttpRequest().getHeader(tokenHeaderName);
 }
 
-async function validateRequest(httpContext, settings: Settings) {
-    const requestUrl = httpContext.getHttpRequest().getAbsoluteUri();
-    const queueitToken = await getQueueItToken(httpContext, requestUrl);
+async function validateRequest(contextProvider: AkamaiContextProvider, settings: Settings) {
+    const requestUrl = contextProvider.getHttpRequest().getAbsoluteUri();
+    const queueitToken = await getQueueItToken(contextProvider, requestUrl);
     let requestUrlWithoutToken = requestUrl.replace(new RegExp("([\?&])(" + KnownUser.QueueITTokenKey + "=[^&]*)", 'i'), "");
     requestUrlWithoutToken = requestUrlWithoutToken.replace(new RegExp("[?]$"), "");
 
@@ -168,10 +162,7 @@ async function validateRequest(httpContext, settings: Settings) {
 
     const validationResult = KnownUser.validateRequestByIntegrationConfig(
         requestUrl, queueitToken, integrationConfig,
-        settings.CustomerId, settings.SecretKey, httpContext);
+        settings.CustomerId, settings.SecretKey, contextProvider);
 
     return { queueitToken, requestUrlWithoutToken, validationResult };
 }
-
-
-
