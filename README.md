@@ -49,12 +49,18 @@ and of type **Hidden** in Akamai property manager. The following table describes
 | PMUSER_QUEUEIT_CONFIG_TYPE | Yes | 'inline' or 'cache' or 'edgekv' |
 | PMUSER_QUEUEIT_API_KEY | If 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to cache  | Find your Api key in the GO Queue-it Platform. |
 | PMUSER_QUEUEIT_EXECUTED | For validation that the Queue-It EdgeWorker was executed | The Queue-It EdgeWorker will set the variable to `true`. This variable can be used in Akamai Property Manager to apply alternative logic if the EdgeWorker was not executed. | 
+| PMUSER_QUEUEIT_GENERATE_EQTOKEN| [Advanced enqueue token feature](#using-enqueueToken). Optional boolean value ('true'/'false') where default is 'false'. |
 
 ## Advanced features
 
-### Using EnQueueToken
-A token could be used for queueing the users. This makes it even more protected. The token will be included when the user is redirected from Akamai to the queue and vice versa. [QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
+### Ignoring OPTIONS requests
+If you want to ignore all HTTP OPTIONS request, ex. no triggers will be evaluated, it can be achieved with a global setting.
+- Add a variable with name PMUSER_QUEUEIT_IGNORE_OPTIONS_REQUESTS and value 'true' to your Akamai property.
 
-To use the EnqueueToken follow the below steps:
-- The waiting room should be configured to accept this token. This configuration could be made in Queue-it Go platform.
-- SHOULD_INCLUDE_ENQUEUETOKEN variable should be set to ```true``` in the ```main.js``` file.
+### Using EnqueueToken
+An enqueue token can be used for allowing access to waiting room(s). Any user without it can't join the queue. The token will be included when the user is redirected from Akamai to the queue. 
+[QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
+
+Follow the steps below to enable use of enqueue token:
+- The waiting room should be configured to require token to enter it. Use Queue-it Go platform or API to setup your waiting room.
+- Add a variable with name PMUSER_QUEUEIT_GENERATE_EQTOKEN and value 'true' to your Akamai property.
