@@ -157,6 +157,7 @@ async function validateRequest(contextProvider: AkamaiContextProvider, settings:
     requestUrlWithoutToken = requestUrlWithoutToken.replace(new RegExp("[?]$"), "");
 
     const integrationConfig = await IntegrationConfigProvider.getIntegrationConfig(
+        settings.CustomerId,
         settings.IntegrationConfigType,
         settings.ApiKey);
 

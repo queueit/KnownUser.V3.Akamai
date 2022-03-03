@@ -1,5 +1,5 @@
 
-const AKAMAI_SDK_VERSION = "3.0.7";
+const AKAMAI_SDK_VERSION = "3.0.8";
 
 export class QueueITHelper {
 
