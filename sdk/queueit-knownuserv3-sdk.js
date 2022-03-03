@@ -6,7 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -308,7 +312,11 @@ exports.ActionType = ActionType;
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -648,7 +656,7 @@ exports.ActionTypes = ActionTypes;
 },{"./QueueITHelpers":6}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConnectorDiagnostics = exports.CookieHelper = exports.QueueParameterHelper = exports.QueueUrlParams = exports.Utils = exports.ErrorCode = void 0;
+exports.SessionValidationResult = exports.InvalidSessionStringBuilder = exports.ConnectorDiagnostics = exports.CookieHelper = exports.QueueParameterHelper = exports.QueueUrlParams = exports.Utils = exports.ErrorCode = void 0;
 var Models_1 = require("./Models");
 var ErrorCode;
 (function (ErrorCode) {
@@ -852,13 +860,95 @@ var ConnectorDiagnostics = /** @class */ (function () {
     return ConnectorDiagnostics;
 }());
 exports.ConnectorDiagnostics = ConnectorDiagnostics;
+var InvalidSessionStringBuilder = /** @class */ (function () {
+    function InvalidSessionStringBuilder() {
+        this.details = new Array();
+    }
+    InvalidSessionStringBuilder.prototype.add = function (key, value) {
+        if (value === void 0) { value = null; }
+        if (value) {
+            this.details.push("".concat(key, ":").concat(value));
+        }
+        else {
+            this.details.push(key);
+        }
+    };
+    InvalidSessionStringBuilder.prototype.toString = function () {
+        return this.details.join(",");
+    };
+    return InvalidSessionStringBuilder;
+}());
+exports.InvalidSessionStringBuilder = InvalidSessionStringBuilder;
+var SessionValidationResult = /** @class */ (function () {
+    function SessionValidationResult(isValid, details, errorCode) {
+        if (details === void 0) { details = null; }
+        if (errorCode === void 0) { errorCode = null; }
+        this.isValid = isValid;
+        this.details = details;
+        this.errorCode = errorCode;
+        this.details = details || {};
+    }
+    SessionValidationResult.prototype.getInvalidReason = function () {
+        if (this.isValid) {
+            return "";
+        }
+        var builder = new InvalidSessionStringBuilder();
+        for (var _i = 0, _a = Object.keys(this.details); _i < _a.length; _i++) {
+            var resultKey = _a[_i];
+            builder.add(resultKey, this.details[resultKey]);
+        }
+        return builder.toString();
+    };
+    SessionValidationResult.newSuccessfulResult = function () {
+        return new SessionValidationResult(true);
+    };
+    SessionValidationResult.newFailedResult = function (errorCode) {
+        return new SessionValidationResult(false, null, errorCode);
+    };
+    SessionValidationResult.setIpBindingValidationDetails = function (hashedIp, clientIp, resultToModify) {
+        if (resultToModify === void 0) { resultToModify = null; }
+        resultToModify = resultToModify !== null && resultToModify !== void 0 ? resultToModify : new SessionValidationResult(false);
+        resultToModify.details["ip"] = "";
+        resultToModify.details['cip'] = Utils.bin2hex(clientIp);
+        resultToModify.details['hip'] = hashedIp;
+        return resultToModify;
+    };
+    SessionValidationResult.setHashMismatchDetails = function (storedHash, resultToModify) {
+        if (resultToModify === void 0) { resultToModify = null; }
+        resultToModify = resultToModify !== null && resultToModify !== void 0 ? resultToModify : new SessionValidationResult(false);
+        resultToModify.details['hash'] = '';
+        resultToModify.details['h'] = storedHash;
+        return resultToModify;
+    };
+    SessionValidationResult.setExpiredResultDetails = function (resultToModify) {
+        if (resultToModify === void 0) { resultToModify = null; }
+        resultToModify = resultToModify !== null && resultToModify !== void 0 ? resultToModify : new SessionValidationResult(false);
+        resultToModify.details['expired'] = '';
+        return resultToModify;
+    };
+    SessionValidationResult.setErrorDetails = function (resultToModify) {
+        if (resultToModify === void 0) { resultToModify = null; }
+        resultToModify = resultToModify !== null && resultToModify !== void 0 ? resultToModify : new SessionValidationResult(false);
+        resultToModify.details['error'] = '';
+        return resultToModify;
+    };
+    return SessionValidationResult;
+}());
+exports.SessionValidationResult = SessionValidationResult;
 
 },{"./Models":5}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserInQueueService = void 0;
+exports.UserInQueueService = exports.InvalidTokenErrorCode = void 0;
 var QueueITHelpers_1 = require("./QueueITHelpers");
 var Models_1 = require("./Models");
+var InvalidTokenErrorCode;
+(function (InvalidTokenErrorCode) {
+    InvalidTokenErrorCode["Hash"] = "hash";
+    InvalidTokenErrorCode["WaitingRoomId"] = "eventid";
+    InvalidTokenErrorCode["Expired"] = "timestamp";
+    InvalidTokenErrorCode["IpBindingMismatch"] = "ip";
+})(InvalidTokenErrorCode = exports.InvalidTokenErrorCode || (exports.InvalidTokenErrorCode = {}));
 var UserInQueueService = /** @class */ (function () {
     function UserInQueueService(contextProvider, userInQueueStateRepository) {
         this.contextProvider = contextProvider;
@@ -868,9 +958,10 @@ var UserInQueueService = /** @class */ (function () {
         this.userInQueueStateRepository.store(config.eventId, queueParams.queueId, queueParams.cookieValidityMinutes, config.cookieDomain, config.isCookieHttpOnly, config.isCookieSecure, queueParams.redirectType, queueParams.hashedIp, secretKey);
         return new Models_1.RequestValidationResult(Models_1.ActionTypes.QueueAction, config.eventId, queueParams.queueId, null, queueParams.redirectType, config.actionName);
     };
-    UserInQueueService.prototype.getErrorResult = function (customerId, targetUrl, config, qParams, errorCode, state) {
+    UserInQueueService.prototype.getErrorResult = function (customerId, targetUrl, config, qParams, validationResult) {
+        var errorCode = validationResult.errorCode;
         var queueItTokenParam = qParams ? "&queueittoken=".concat(qParams.queueITToken) : '';
-        var query = this.getQueryString(customerId, config.eventId, config.version, config.culture, config.layoutName, config.actionName, state.getInvalidCookieReason()) +
+        var query = this.getQueryString(customerId, config.eventId, config.version, config.culture, config.layoutName, config.actionName, validationResult.getInvalidReason()) +
             queueItTokenParam +
             "&ts=".concat(QueueITHelpers_1.Utils.getCurrentTime()) +
             (targetUrl ? "&t=".concat(QueueITHelpers_1.Utils.encodeUrl(targetUrl)) : "");
@@ -925,17 +1016,17 @@ var UserInQueueService = /** @class */ (function () {
         var requestValidationResult;
         var isTokenValid = false;
         if (queueTokenParams) {
-            var tokenValidationResult = this.validateToken(config, queueTokenParams, secretKey);
-            isTokenValid = tokenValidationResult.isValid;
+            var validationOutput = this.validateToken(config, queueTokenParams, secretKey);
+            isTokenValid = validationOutput.result.isValid;
             if (isTokenValid) {
                 requestValidationResult = this.getValidTokenResult(config, queueTokenParams, secretKey);
             }
             else {
-                requestValidationResult = this.getErrorResult(customerId, targetUrl, config, queueTokenParams, tokenValidationResult.errorCode, state);
+                requestValidationResult = this.getErrorResult(customerId, targetUrl, config, queueTokenParams, validationOutput.result);
             }
         }
         else if (state.isBoundToAnotherIp) {
-            requestValidationResult = this.getErrorResult(customerId, targetUrl, config, queueTokenParams, QueueITHelpers_1.ErrorCode.CookieSessionState, state);
+            requestValidationResult = this.getErrorResult(customerId, targetUrl, config, queueTokenParams, state.result);
         }
         else {
             requestValidationResult = this.getQueueResult(targetUrl, config, customerId);
@@ -972,36 +1063,44 @@ var UserInQueueService = /** @class */ (function () {
     UserInQueueService.prototype.validateToken = function (config, queueParams, secretKey) {
         var calculatedHash = QueueITHelpers_1.Utils.generateSHA256Hash(secretKey, queueParams.queueITTokenWithoutHash, this.contextProvider);
         if (calculatedHash !== queueParams.hashCode)
-            return new TokenValidationResult(false, "hash");
+            return new TokenValidationOutput(QueueITHelpers_1.SessionValidationResult.newFailedResult(InvalidTokenErrorCode.Hash));
         if (queueParams.eventId !== config.eventId)
-            return new TokenValidationResult(false, "eventid");
+            return new TokenValidationOutput(QueueITHelpers_1.SessionValidationResult.newFailedResult(InvalidTokenErrorCode.WaitingRoomId));
         if (queueParams.timeStamp < QueueITHelpers_1.Utils.getCurrentTime())
-            return new TokenValidationResult(false, "timestamp");
+            return new TokenValidationOutput(QueueITHelpers_1.SessionValidationResult.newFailedResult(InvalidTokenErrorCode.Expired));
         var clientIp = this.contextProvider.getHttpRequest().getUserHostAddress();
         if (queueParams.hashedIp && clientIp) {
-            var hashedIp = QueueITHelpers_1.Utils.generateSHA256Hash(secretKey, clientIp, this.contextProvider);
-            if (hashedIp !== queueParams.hashedIp) {
-                return new TokenValidationResult(false, "ip");
+            var expectedIpHash = QueueITHelpers_1.Utils.generateSHA256Hash(secretKey, clientIp, this.contextProvider);
+            if (expectedIpHash !== queueParams.hashedIp) {
+                var newResult = QueueITHelpers_1.SessionValidationResult.newFailedResult(InvalidTokenErrorCode.IpBindingMismatch);
+                QueueITHelpers_1.SessionValidationResult.setIpBindingValidationDetails(queueParams.hashedIp, clientIp, newResult);
+                return new TokenValidationOutput(newResult);
             }
         }
-        return new TokenValidationResult(true, null);
+        return new TokenValidationOutput(QueueITHelpers_1.SessionValidationResult.newSuccessfulResult());
     };
-    UserInQueueService.SDK_VERSION = "v3-javascript-" + "3.7.8";
+    UserInQueueService.SDK_VERSION = "v3-javascript-" + "3.7.10";
     return UserInQueueService;
 }());
 exports.UserInQueueService = UserInQueueService;
-var TokenValidationResult = /** @class */ (function () {
-    function TokenValidationResult(isValid, errorCode) {
-        this.isValid = isValid;
-        this.errorCode = errorCode;
+var TokenValidationOutput = /** @class */ (function () {
+    function TokenValidationOutput(result) {
+        this._result = result;
     }
-    return TokenValidationResult;
+    Object.defineProperty(TokenValidationOutput.prototype, "result", {
+        get: function () {
+            return this._result;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return TokenValidationOutput;
 }());
 
 },{"./Models":5,"./QueueITHelpers":6}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StateInfo = exports.UserInQueueStateCookieRepository = exports.QueueItAcceptedCookie = exports.CookieValidationResult = void 0;
+exports.CookieStateInfo = exports.UserInQueueStateCookieRepository = exports.QueueItAcceptedCookie = exports.CookieValidationResult = void 0;
 var QueueITHelpers_1 = require("./QueueITHelpers");
 var CookieValidationResult;
 (function (CookieValidationResult) {
@@ -1095,18 +1194,18 @@ var UserInQueueStateCookieRepository = /** @class */ (function () {
             var cookieKey = UserInQueueStateCookieRepository.getCookieKey(eventId);
             var cookie = this.contextProvider.getHttpRequest().getCookieValue(cookieKey);
             if (!cookie)
-                return new StateInfo("", null, "", null, CookieValidationResult.NotFound, null, clientIp);
+                return new CookieStateInfo("", null, "", null, CookieValidationResult.NotFound, null, clientIp);
             qitAcceptedCookie = QueueItAcceptedCookie.fromCookieHeader(cookie);
             var cookieValidationResult = this.isCookieValid(secretKey, qitAcceptedCookie, eventId, cookieValidityMinutes, validateTime);
             if (cookieValidationResult != CookieValidationResult.Valid) {
-                return new StateInfo("", null, "", qitAcceptedCookie.hashedIp, cookieValidationResult, qitAcceptedCookie, clientIp);
+                return new CookieStateInfo("", null, "", qitAcceptedCookie.hashedIp, cookieValidationResult, qitAcceptedCookie, clientIp);
             }
-            return new StateInfo(qitAcceptedCookie.queueId, qitAcceptedCookie.fixedCookieValidityMinutes
+            return new CookieStateInfo(qitAcceptedCookie.queueId, qitAcceptedCookie.fixedCookieValidityMinutes
                 ? parseInt(qitAcceptedCookie.fixedCookieValidityMinutes)
                 : null, qitAcceptedCookie.redirectType, qitAcceptedCookie.hashedIp, CookieValidationResult.Valid, qitAcceptedCookie, clientIp);
         }
         catch (ex) {
-            return new StateInfo("", null, "", qitAcceptedCookie === null || qitAcceptedCookie === void 0 ? void 0 : qitAcceptedCookie.hashedIp, CookieValidationResult.Error, qitAcceptedCookie, clientIp);
+            return new CookieStateInfo("", null, "", qitAcceptedCookie === null || qitAcceptedCookie === void 0 ? void 0 : qitAcceptedCookie.hashedIp, CookieValidationResult.Error, qitAcceptedCookie, clientIp);
         }
     };
     UserInQueueStateCookieRepository.prototype.isCookieValid = function (secretKey, cookie, eventId, cookieValidityMinutes, validateTime) {
@@ -1166,8 +1265,8 @@ var UserInQueueStateCookieRepository = /** @class */ (function () {
     return UserInQueueStateCookieRepository;
 }());
 exports.UserInQueueStateCookieRepository = UserInQueueStateCookieRepository;
-var StateInfo = /** @class */ (function () {
-    function StateInfo(queueId, fixedCookieValidityMinutes, redirectType, hashedIp, cookieValidationResult, cookie, clientIp) {
+var CookieStateInfo = /** @class */ (function () {
+    function CookieStateInfo(queueId, fixedCookieValidityMinutes, redirectType, hashedIp, cookieValidationResult, cookie, clientIp) {
         this.queueId = queueId;
         this.fixedCookieValidityMinutes = fixedCookieValidityMinutes;
         this.redirectType = redirectType;
@@ -1176,74 +1275,79 @@ var StateInfo = /** @class */ (function () {
         this.cookie = cookie;
         this.clientIp = clientIp;
     }
-    Object.defineProperty(StateInfo.prototype, "isValid", {
+    Object.defineProperty(CookieStateInfo.prototype, "isValid", {
         get: function () {
             return this.cookieValidationResult === CookieValidationResult.Valid;
         },
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(StateInfo.prototype, "isFound", {
+    Object.defineProperty(CookieStateInfo.prototype, "isFound", {
         get: function () {
             return this.cookieValidationResult !== CookieValidationResult.NotFound;
         },
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(StateInfo.prototype, "isBoundToAnotherIp", {
+    Object.defineProperty(CookieStateInfo.prototype, "isBoundToAnotherIp", {
         get: function () {
             return this.cookieValidationResult === CookieValidationResult.IpBindingMismatch;
         },
         enumerable: false,
         configurable: true
     });
-    StateInfo.prototype.isStateExtendable = function () {
+    CookieStateInfo.prototype.isStateExtendable = function () {
         return this.isValid && !this.fixedCookieValidityMinutes;
     };
-    StateInfo.prototype.getInvalidCookieReason = function () {
-        if (this.isValid) {
-            return "";
-        }
-        var details = new Array();
-        switch (this.cookieValidationResult) {
-            case CookieValidationResult.HashMismatch:
-                details.push("hash");
-                details.push("h:".concat(this.cookie.storedHash));
-                break;
-            case CookieValidationResult.Expired:
-                details.push("expired");
-                break;
-            case CookieValidationResult.Error:
-                details.push("error");
-                break;
-            case CookieValidationResult.NotFound:
-                break;
-            case CookieValidationResult.IpBindingMismatch:
-                details.push("ip");
-                details.push("hip:".concat(this.cookie.hashedIp));
-                details.push("cip:".concat(QueueITHelpers_1.Utils.bin2hex(this.clientIp)));
-                break;
-        }
-        if (this.isFound) {
-            if (this.redirectType) {
-                details.push("r:".concat(this.redirectType));
+    Object.defineProperty(CookieStateInfo.prototype, "result", {
+        get: function () {
+            if (this.isValid) {
+                return QueueITHelpers_1.SessionValidationResult.newSuccessfulResult();
             }
-            if (this.queueId) {
-                details.push("q:".concat(this.queueId));
+            var result = QueueITHelpers_1.SessionValidationResult.newFailedResult(QueueITHelpers_1.ErrorCode.CookieSessionState);
+            switch (this.cookieValidationResult) {
+                case CookieValidationResult.HashMismatch:
+                    QueueITHelpers_1.SessionValidationResult.setHashMismatchDetails(this.cookie.storedHash, result);
+                    break;
+                case CookieValidationResult.Expired:
+                    QueueITHelpers_1.SessionValidationResult.setExpiredResultDetails(result);
+                    break;
+                case CookieValidationResult.Error:
+                    QueueITHelpers_1.SessionValidationResult.setErrorDetails();
+                    break;
+                case CookieValidationResult.NotFound:
+                    break;
+                case CookieValidationResult.IpBindingMismatch:
+                    QueueITHelpers_1.SessionValidationResult.setIpBindingValidationDetails(this.cookie.hashedIp, this.clientIp, result);
+                    break;
             }
-            details.push("st:".concat(Date.now()));
-        }
-        return details.join(",");
-    };
-    return StateInfo;
+            if (this.isFound) {
+                if (this.redirectType) {
+                    result.details['r'] = this.redirectType;
+                }
+                if (this.queueId) {
+                    result.details['q'] = this.queueId;
+                }
+                result.details['st'] = Date.now().toString();
+            }
+            return result;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return CookieStateInfo;
 }());
-exports.StateInfo = StateInfo;
+exports.CookieStateInfo = CookieStateInfo;
 
 },{"./QueueITHelpers":6}],9:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];

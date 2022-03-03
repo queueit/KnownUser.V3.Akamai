@@ -3,11 +3,11 @@
   "repository": "https://github.com/queueit/KnownUser.V3.Akamai",
   "license": "MIT",
   "main": "./dist/index.js",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "queueit-knownuser": "^3.7.9",
+    "queueit-knownuser": "^3.7.10",
     "@queue-it/queue-token": "~1.0.2"
   },
   "devDependencies": {},
