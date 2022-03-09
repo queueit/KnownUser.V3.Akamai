@@ -22,6 +22,8 @@ Define edgeworker rule in Akamai property and set criteria as illustrated in pic
 #### Download integration config rule
 Define property rule to download integration config and add following configuration illustrated in the pictures.
 
+NOTE:  Choose the "Blank Rule" template and press "Insert Rule" to continue and then choose the "Origin Server" behavior as shown below.
+
 ![Download integration config criteria](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/integrationConfigDownloadCriteria.png)
 
 ![Download integration config Behaviour](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/integrationConfigDonloadBehavior.png)
