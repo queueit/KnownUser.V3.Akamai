@@ -3,7 +3,6 @@ import { Cookies } from 'cookies';
 import { IConnectorContextProvider, ICryptoProvider, IEnqueueTokenProvider, IHttpRequest, IHttpResponse } from 'queueit-knownuser';
 import { AkamaiCryptoProvider } from './akamaiCryptoProvider.js';
 import { AkamaiEnqueueTokenProvider } from './akamaiEnqueueTokenProvider.js';
-import { Settings } from './queueitHelpers.js';
 
 export class AkamaiContextProvider implements IConnectorContextProvider {
     private _httpRequest: IHttpRequest;
@@ -26,18 +25,15 @@ export class AkamaiContextProvider implements IConnectorContextProvider {
     }
 
     public setEnqueueTokenProvider(
-        setting: Settings,
+        customerId: string,
+        secretKey: string,       
         validityTime: Number,
         clientIp: string,
         customData?: any) {
-
-        if (!setting || validityTime < -1) {
-            this._enqueueTokenProvider = null;
-            return;
-        }
-
+       
         this._enqueueTokenProvider = new AkamaiEnqueueTokenProvider(
-            setting,
+            customerId,
+            secretKey,
             validityTime,
             clientIp,
             customData

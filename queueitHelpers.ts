@@ -1,5 +1,5 @@
 
-const AKAMAI_SDK_VERSION = "3.0.8";
+const AKAMAI_SDK_VERSION = "3.0.9";
 
 export class QueueITHelper {
 
@@ -31,7 +31,8 @@ export class QueueITHelper {
             CustomerId: request.getVariable('PMUSER_QUEUEIT_CUSTOMERID'),
             IntegrationConfigType: request.getVariable('PMUSER_QUEUEIT_CONFIG_TYPE'),
             IgnoreOptionsRequests: request.getVariable('PMUSER_QUEUEIT_IGNORE_OPTIONS_REQUESTS'),
-            GenerateEnqueueToken: request.getVariable('PMUSER_QUEUEIT_GENERATE_EQTOKEN')
+            GenerateEnqueueToken: request.getVariable('PMUSER_QUEUEIT_GENERATE_EQTOKEN'),
+            EnqueueTokenValidityTime: request.getVariable('PMUSER_QUEUEIT_EQTOKEN_VALIDITY_TIME')
         };
 
         if (!setting.CustomerId) {
@@ -83,7 +84,8 @@ export interface Settings {
     CustomerId: string,
     IntegrationConfigType: string,
     IgnoreOptionsRequests: boolean,
-    GenerateEnqueueToken: boolean
+    GenerateEnqueueToken: boolean,
+    EnqueueTokenValidityTime: Number
 }
 
 export class SettingException {

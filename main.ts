@@ -22,7 +22,7 @@ export async function onClientRequest(request) {
         request.setVariable(EXECUTED_VARIABLE_NAME, 'true');
 
         const settings = QueueITHelper.getSettingsFromPMVariables(request);
-        if (isIgnored(request, settings)) {
+        if (!settings || isIgnored(request, settings)) {
             return;
         }
 
@@ -37,9 +37,12 @@ export async function onClientRequest(request) {
         });
 
         if (settings.GenerateEnqueueToken) {
+            const validityTime = !settings.EnqueueTokenValidityTime || settings.EnqueueTokenValidityTime < 30000 ? 
+                240000 : settings.EnqueueTokenValidityTime;
             contextProvider.setEnqueueTokenProvider(
-                settings,
-                60000,
+                settings.CustomerId,
+                settings.SecretKey,
+                validityTime,                
                 contextProvider.getHttpRequest().getUserHostAddress()
             );
         }
