@@ -60,7 +60,7 @@ If you want to ignore all HTTP OPTIONS request, ex. no triggers will be evaluate
 
 ### Using EnqueueToken
 An enqueue token can be used for allowing access to waiting room(s). Any user without it can't join the queue. The token will be included when the user is redirected from Akamai to the queue. 
-[QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 1 minute.
+[QueueToken](https://github.com/queueit/QueueToken.V1.JavaScript) package has been used to generate this token. The generated token will be valid for 4 minute.
 
 Follow the steps below to enable use of enqueue token:
 - The waiting room should be configured to require token to enter it. Use Queue-it Go platform or API to setup your waiting room.
