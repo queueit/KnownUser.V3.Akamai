@@ -1,5 +1,5 @@
 
-const AKAMAI_SDK_VERSION = "3.0.9";
+const AKAMAI_SDK_VERSION = "3.0.10";
 
 export class QueueITHelper {
 
@@ -18,7 +18,7 @@ export class QueueITHelper {
 
     public static getNoCacheHeaders() {
         return {
-            'Cache-Control': ['no-cache, no-store, must-revalidate'],
+            'Cache-Control': ['no-cache, no-store, must-revalidate, max-age=0'],
             'Pragma': ['no-cache'],
             'Expires': ['Fri, 01 Jan 1990 00:00:00 GMT']
         };
@@ -32,7 +32,8 @@ export class QueueITHelper {
             IntegrationConfigType: request.getVariable('PMUSER_QUEUEIT_CONFIG_TYPE'),
             IgnoreOptionsRequests: request.getVariable('PMUSER_QUEUEIT_IGNORE_OPTIONS_REQUESTS'),
             GenerateEnqueueToken: request.getVariable('PMUSER_QUEUEIT_GENERATE_EQTOKEN'),
-            EnqueueTokenValidityTime: request.getVariable('PMUSER_QUEUEIT_EQTOKEN_VALIDITY_TIME')
+            EnqueueTokenValidityTime: request.getVariable('PMUSER_QUEUEIT_EQTOKEN_VALIDITY_TIME'),
+            AddDebugInfo: request.getVariable('PMUSER_QUEUEIT_ADD_DEBUG')
         };
 
         if (!setting.CustomerId) {
@@ -85,7 +86,8 @@ export interface Settings {
     IntegrationConfigType: string,
     IgnoreOptionsRequests: boolean,
     GenerateEnqueueToken: boolean,
-    EnqueueTokenValidityTime: Number
+    EnqueueTokenValidityTime: Number,
+    AddDebugInfo: boolean
 }
 
 export class SettingException {

@@ -57,10 +57,12 @@ class AkamaiHttpRequest {
         return this.getHeader("user-agent");
     }
 
-    public getHeader(headerNameArg: string) {
+   public  getHeader(headerNameArg:string) {
+        if (headerNameArg=="x-queueit-ajaxpageurl") {
+            return (this._akamiNativeRequest.getVariable('PMUSER_QUEUEIT_AJAXURL') || this._akamiNativeRequest.getHeader(headerNameArg) || []).toString();
+        }
         return (this._akamiNativeRequest.getHeader(headerNameArg) || []).toString();
     }
-
     public getAbsoluteUri() {
         return `${this._akamiNativeRequest.scheme}://${this._akamiNativeRequest.host}${this._akamiNativeRequest.url}`;
     }
@@ -80,11 +82,10 @@ class AkamaiHttpRequest {
             return undefined;
         }
     }
-
     public getRequestBodyAsString() {
-        return "";
+        return this._akamiNativeRequest.getVariable('PMUSER_REQ_BODY') || "";
     }
-}
+ }
 
 class AkamaiHttpResponse {
     constructor(private _akamiNativeRequest: any) {

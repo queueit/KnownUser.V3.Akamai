@@ -15,13 +15,16 @@ const BIG_SET_COOKIE_VALUE = 'TOO_BIG_COOKIE';
 const QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME = 'x-queueit-connector';
 const QUEUEIT_FAILED_HEADERNAME = 'x-queueit-failed';
 const QUEUEIT_CONNECTOR_NAME = "akamai";
+const QUEUEIT_GENERATEDRESPONSE = 'PMUSER_QUEUEIT_REDIRECTED';
 
 export async function onClientRequest(request) {
+    let settings: Settings = null;
     try {
+    
         // Set PMUSER variable to allow validation that EdgeWorker was executed
         request.setVariable(EXECUTED_VARIABLE_NAME, 'true');
 
-        const settings = QueueITHelper.getSettingsFromPMVariables(request);
+        settings = QueueITHelper.getSettingsFromPMVariables(request);
         if (!settings || isIgnored(request, settings)) {
             return;
         }
@@ -37,12 +40,12 @@ export async function onClientRequest(request) {
         });
 
         if (settings.GenerateEnqueueToken) {
-            const validityTime = !settings.EnqueueTokenValidityTime || settings.EnqueueTokenValidityTime < 30000 ? 
+            const validityTime = !settings.EnqueueTokenValidityTime || settings.EnqueueTokenValidityTime < 30000 ?
                 240000 : settings.EnqueueTokenValidityTime;
             contextProvider.setEnqueueTokenProvider(
                 settings.CustomerId,
                 settings.SecretKey,
-                validityTime,                
+                validityTime,
                 contextProvider.getHttpRequest().getUserHostAddress()
             );
         }
@@ -59,14 +62,15 @@ export async function onClientRequest(request) {
                 headers[headerName] = [QueueITHelper.addKUPlatformVersion(validationResult.getAjaxRedirectUrl())];
                 headers['Access-Control-Expose-Headers'] = [headerName];
                 request.respondWith(200, headers, "");
-                return;
+
             } else {
                 // Send the user to the queue - either because hash was missing or because is was invalid
                 let headers = QueueITHelper.getNoCacheHeaders();
                 headers['Location'] = [QueueITHelper.addKUPlatformVersion(validationResult.redirectUrl)];
                 request.respondWith(302, headers, "");
-                return;
             }
+            request.setVariable(QUEUEIT_GENERATEDRESPONSE, 'true');
+            return;
         } else {
             // Request can continue - we remove queueittoken form querystring parameter to avoid sharing of user specific token
             // Support mobile scenario adding the condition !validationResult.isAjaxResult
@@ -74,6 +78,7 @@ export async function onClientRequest(request) {
                 let headers = QueueITHelper.getNoCacheHeaders();
                 headers['Location'] = [requestUrlWithoutToken];
                 request.respondWith(302, headers, "");
+                request.setVariable(QUEUEIT_GENERATEDRESPONSE, 'true');
                 return;
             }
         }
@@ -83,19 +88,15 @@ export async function onClientRequest(request) {
         } else {
             request.setVariable(ERROR_VARIABLE_NAME, 'request');
         }
-        /*
-        if (typeof ex == 'string') {
-           request.setVariable(ERROR_VARIABLE_NAME, ex);
+        if (settings != null && settings.AddDebugInfo) {
+            logExceptionInResponseHeader(true, request, null, ex);
         }
-        else {
-          request.setVariable(ERROR_VARIABLE_NAME, JSON.stringify(ex));
-        }
-        */
         logger.log('OnClientRequest Exception: %s', ex);
     }
 }
 
 export async function onClientResponse(request, response) {
+    let settings: Settings = null;
     try {
         response.addHeader(QUEUEIT_CONNECTOR_EXECUTED_HEADER_NAME, QUEUEIT_CONNECTOR_NAME);
 
@@ -127,14 +128,9 @@ export async function onClientResponse(request, response) {
         } else {
             response.addHeader(QUEUEIT_FAILED_HEADERNAME, 'response');
         }
-        /*
-        if (typeof ex == 'string') {
-           response.addHeader(QUEUEIT_FAILED_HEADERNAME, ex);
+        if (settings != null && settings.AddDebugInfo) {
+            logExceptionInResponseHeader(false, request, response, ex);
         }
-        else {
-           response.addHeader(QUEUEIT_FAILED_HEADERNAME, JSON.stringify(ex));
-        }
-        */
         logger.log('OnClientRequest Exception: %s', ex);
     }
 }
@@ -169,4 +165,28 @@ async function validateRequest(contextProvider: AkamaiContextProvider, settings:
         settings.CustomerId, settings.SecretKey, contextProvider);
 
     return { queueitToken, requestUrlWithoutToken, validationResult };
+}
+function logExceptionInResponseHeader(isRequest, request, response, ex,) {
+    try {
+        if (isRequest) {
+            if (typeof ex == 'string') {
+                request.setVariable(ERROR_VARIABLE_NAME, ex);
+            }
+            else {
+                request.setVariable(ERROR_VARIABLE_NAME, JSON.stringify(ex));
+            }
+            return;
+        }
+        else {
+            if (typeof ex == 'string') {
+                response.addHeader(QUEUEIT_FAILED_HEADERNAME, ex);
+            }
+            else {
+                response.addHeader(QUEUEIT_FAILED_HEADERNAME, JSON.stringify(ex));
+            }
+        }
+    }
+    catch
+    { }
+
 }
