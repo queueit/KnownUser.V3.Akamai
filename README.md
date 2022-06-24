@@ -55,8 +55,8 @@ and of type **Hidden** in Akamai property manager. The following table describes
 | PMUSER_QUEUEIT_API_KEY | If 'PMUSER_QUEUEIT_CONFIG_TYPE' is set to cache  | Find your Api key in the GO Queue-it Platform. |
 | PMUSER_TRUE_CLIENT_IP | Yes | If enabled at waitingroom, it is used to validate the vistor IP by connector |
 | PMUSER_QUEUEIT_EXECUTED | For validation that the Queue-It EdgeWorker was executed | The Queue-It EdgeWorker will set the variable to `true`. This variable can be used in Akamai Property Manager to apply alternative logic if the EdgeWorker was not executed. | 
-| PMUSER_QUEUEIT_NO_KEY| [Advanced enqueue token feature](#using-enqueueToken) | Optional boolean value ('true'/'false') where default is 'false'. |
 | PMUSER_QUEUEIT_GENERATE_EQTOKEN| [Advanced enqueue token feature](#using-enqueueToken) | Optional boolean value ('true'/'false') where default is 'false'. |
+| PMUSER_QUEUEIT_NO_KEY| [Advanced enqueue token feature](#using-enqueueToken) | Optional boolean value ('true'/'false') where default is 'false'. |
 | PMUSER_QUEUEIT_EQTOKEN_VALIDITY | No | Default: 240000 ms if provided value is null or less than 30000 ms |
 
 
