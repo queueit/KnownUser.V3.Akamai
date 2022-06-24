@@ -7,14 +7,16 @@ export class AkamaiEnqueueTokenProvider implements IEnqueueTokenProvider {
     _customerId: string;
     _secretKey: string;
     _validityTime: Number;
-    _clientIp: string;
+    _clientIp: string | null;
     _customData: any;
+    _withKey: boolean;
 
     public constructor(
         customerId: string,
         secretKey: string,
         validityTime: Number,
-        clientIp?: string,
+        clientIp: string | null,
+        withKey: boolean,
         customData?: any
     ) {
         this._customerId = customerId;
@@ -22,16 +24,22 @@ export class AkamaiEnqueueTokenProvider implements IEnqueueTokenProvider {
         this._validityTime = validityTime;
         this._clientIp = clientIp;
         this._customData = `{ ${(customData !== null) ? `,"cd":"${customData}"` : ''} }`;
+        this._withKey = withKey;
     }
 
     public getEnqueueToken(wrId: string): string {
 
+        var payLoad = Payload.Enqueue()
+                        .WithCustomData(this._customData);
+
+        if (this._withKey) 
+        {
+            payLoad = payLoad.WithKey(QueueITHelper.generateUUID());
+        }
+
         const token = Token.Enqueue(this._customerId)
             .WithPayload(
-                Payload.Enqueue()
-                    .WithKey(QueueITHelper.generateUUID())
-                    .WithCustomData(this._customData)
-                    .Generate()
+                payLoad.Generate()
             )
             .WithEventId(wrId)
             .WithIpAddress(this._clientIp)

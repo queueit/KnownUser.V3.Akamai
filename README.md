@@ -74,3 +74,4 @@ Follow the steps below to enable use of enqueue token:
 - The waiting room should be configured to require token to enter it. Use Queue-it Go platform or API to setup your waiting room.
 - Add a variable with name PMUSER_QUEUEIT_GENERATE_EQTOKEN and value 'true' to your Akamai property.
 - If you are using invite-only WRs simultaneously and want to generate default enqueuetoken on the connector you need set PMUSER_QUEUEIT_NO_KEY to true and in your waitingroom set "Require user identification key" to Disabled.
+

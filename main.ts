@@ -20,7 +20,7 @@ const QUEUEIT_GENERATEDRESPONSE = 'PMUSER_QUEUEIT_REDIRECTED';
 export async function onClientRequest(request) {
     let settings: Settings = null;
     try {
-    
+
         // Set PMUSER variable to allow validation that EdgeWorker was executed
         request.setVariable(EXECUTED_VARIABLE_NAME, 'true');
 
@@ -46,7 +46,8 @@ export async function onClientRequest(request) {
                 settings.CustomerId,
                 settings.SecretKey,
                 validityTime,
-                contextProvider.getHttpRequest().getUserHostAddress()
+                contextProvider.getHttpRequest().getUserHostAddress(),
+                !settings.NoKey
             );
         }
 

@@ -3,7 +3,7 @@
   "repository": "https://github.com/queueit/KnownUser.V3.Akamai",
   "license": "MIT",
   "main": "./dist/index.js",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "type": "module",
   "scripts": {},
   "dependencies": {

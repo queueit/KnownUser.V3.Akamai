@@ -28,7 +28,8 @@ export class AkamaiContextProvider implements IConnectorContextProvider {
         customerId: string,
         secretKey: string,       
         validityTime: Number,
-        clientIp: string,
+        clientIp: string | null,
+        withKey: boolean,
         customData?: any) {
        
         this._enqueueTokenProvider = new AkamaiEnqueueTokenProvider(
@@ -36,6 +37,7 @@ export class AkamaiContextProvider implements IConnectorContextProvider {
             secretKey,
             validityTime,
             clientIp,
+            withKey,
             customData
         );
     }

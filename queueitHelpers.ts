@@ -1,5 +1,5 @@
 
-const AKAMAI_SDK_VERSION = "3.0.10";
+const AKAMAI_SDK_VERSION = "3.0.11";
 
 export class QueueITHelper {
 
@@ -30,10 +30,11 @@ export class QueueITHelper {
             ApiKey: request.getVariable('PMUSER_QUEUEIT_API_KEY'),
             CustomerId: request.getVariable('PMUSER_QUEUEIT_CUSTOMERID'),
             IntegrationConfigType: request.getVariable('PMUSER_QUEUEIT_CONFIG_TYPE'),
-            IgnoreOptionsRequests: request.getVariable('PMUSER_QUEUEIT_IGNORE_OPTIONS_REQUESTS'),
+            IgnoreOptionsRequests: request.getVariable('PMUSER_QUEUEIT_IGNORE_REQUEST'),
             GenerateEnqueueToken: request.getVariable('PMUSER_QUEUEIT_GENERATE_EQTOKEN'),
-            EnqueueTokenValidityTime: request.getVariable('PMUSER_QUEUEIT_EQTOKEN_VALIDITY_TIME'),
-            AddDebugInfo: request.getVariable('PMUSER_QUEUEIT_ADD_DEBUG')
+            EnqueueTokenValidityTime: request.getVariable('PMUSER_QUEUEIT_EQTOKEN_VALIDITY'),
+            AddDebugInfo: request.getVariable('PMUSER_QUEUEIT_ADD_DEBUG'),
+            NoKey: request.getVariable('PMUSER_QUEUEIT_NO_KEY')
         };
 
         if (!setting.CustomerId) {
@@ -87,6 +88,7 @@ export interface Settings {
     IgnoreOptionsRequests: boolean,
     GenerateEnqueueToken: boolean,
     EnqueueTokenValidityTime: Number,
+    NoKey:boolean,
     AddDebugInfo: boolean
 }
 
