@@ -56,14 +56,14 @@ and of type **Hidden** in Akamai property manager. The following table describes
 | PMUSER_TRUE_CLIENT_IP | Yes | If enabled at waitingroom, it is used to validate the vistor IP by connector |
 | PMUSER_QUEUEIT_EXECUTED | For validation that the Queue-It EdgeWorker was executed | The Queue-It EdgeWorker will set the variable to `true`. This variable can be used in Akamai Property Manager to apply alternative logic if the EdgeWorker was not executed. | 
 | PMUSER_QUEUEIT_GENERATE_EQTOKEN| [Advanced enqueue token feature](#using-enqueueToken) | Optional boolean value ('true'/'false') where default is 'false'. |
-| PMUSER_QUEUEIT_EQTOKEN_VALIDITY_TIME | No | Default: 240000 ms if provided value is null or less than 30000 ms |
+| PMUSER_QUEUEIT_EQTOKEN_VALIDITY | No | Default: 240000 ms if provided value is null or less than 30000 ms |
 
 
 ## Advanced features
 
 ### Ignoring OPTIONS requests
 If you want to ignore all HTTP OPTIONS request, ex. no triggers will be evaluated, it can be achieved with a global setting.
-- Add a variable with name PMUSER_QUEUEIT_IGNORE_OPTIONS_REQUESTS and value 'true' to your Akamai property.
+- Add a variable with name PMUSER_QUEUEIT_IGNORE_REQUESTS and value 'true' to your Akamai property.
 
 ### Using EnqueueToken
 An enqueue token can be used for allowing access to waiting room(s). Any user without it can't join the queue. The token will be included when the user is redirected from Akamai to the queue. 
