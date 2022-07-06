@@ -24,7 +24,7 @@ Installing the edge worker the first time requires uploading an archive file (TG
    - **See this Section for more detail about [QueueIT variables](#queueit-variables) describes queue-it variables in detail.**
  - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper    section (make sure you are not executing edgeworker for static resources)
  - Step 8: Add a Site Failover behavior to retry if EdgeWorker fails](#adding-a-site-failover-behaviour)
- - Step 9: Add Rule for Integration Download from Queue-IT
+ - Step 9: Add Rule for Integration Download following Step 6 if not completed already
  - Step 10: Add a user varible PMUSER_TRUE_CLIENT_IP and a behaviour to set PMUSER_TRUE_CLIENT_IP variable to {{builtin.AK_CLIENT_REAL_IP}}](#adding-set-ip-behaviour)
  - Step 11: Save and Activate the updated Akamai Property configuration
 
