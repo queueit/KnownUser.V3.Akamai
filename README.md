@@ -9,22 +9,24 @@ A subscription / access to Akamai Edge Workers is required to utilize this conne
 
 ## Installation
 
-**Note: EdgeWorker should be created using the Dynamic Compute resource tier.**
+**Note: EdgeWorker ID should be created using the resource tier = Dynamic Compute.**
 
 Installing the edge worker the first time requires uploading an archive file (TGZ format) to the Edge Worker manager in the Akamai Control Center. Once uploaded, the service worker code can be customized and updated with specific configurations (protection schema) managed and exported from the Queue-it GO Platform. 
- - Step 1: Download all js files plus bundle.json and create bundle and upload to Akamai Edge Worker manager **
- - Step 2: Create desired waiting room(s), triggers, and actions in GO. Then, save/publish the Configuration. 
- - [Step 3: Provide integration config](https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/IntegrationConfig.md)
- - Step 4: Upload the Queue-it edge worker bundle
- - Step 5: Update the bundle.js file in the Edge Worker manager with a new version and deploy the new version of EdgeWorker
- - Step 6: In Akamai Propery, add queue-it required **hidden** variables named as 
-   - 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_SECRET_KEY', 'PMUSER_QUEUEIT_CONFIG_TYPE' and 'PMUSER_QUEUEIT_API_KEY'
-   - **Section [QueueIT variables](#queueit-variables) describes queue-it variables in detail.**
- - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper section (make sure you are not executing edgeworker for static resources)
- - [Step 8: Add a Site Failover behavior to retry if EdgeWorker fails](#adding-a-site-failover-behaviour)
- - [Step 9: Add a user varible PMUSER_TRUE_CLIENT_IP and a behaviour to set PMUSER_TRUE_CLIENT_IP variable to {{builtin.AK_CLIENT_REAL_IP}}](#adding-set-ip-behaviour)
- - Step 10: Add integration config download criteria condition, behavior and cache if integration config download method is used.
- - Step 11: Deploy the updated Akamai Property configuration
+
+ - Step 1: Create desired waiting room(s), triggers, and actions in Queue-IT GO Platform. Then, save/publish the Configuration. 
+ - Step 2: Download the latest code package "kuedge.tar.gz" [here](https://github.com/queueit/KnownUser.V3.Akamai/releases/latest).
+ - Step 3: Create new EdgeWorker ID on Akamai using the Resource tier = Dynamic Compute 
+ - Step 4: Create version by drag drop downloaded kuedge.tar.gz file
+ - Step 5: Activate the EdgeWorker
+ - Step 6: Create new Akamai Property under the Property Group by choosing one of three integration configurations (https://github.com/queueit/KnownUser.V3.Akamai/blob/master/documentation/IntegrationConfig.md)
+    In Akamai Propery, add queue-it required **hidden** variables named as 
+   - 'PMUSER_QUEUEIT_CUSTOMERID', 'PMUSER_QUEUEIT_SECRET_KEY', 'PMUSER_QUEUEIT_CONFIG_TYPE', 'PMUSER_QUEUEIT_API_KEY' and PMUSER_DEFAULT_HOST (for failover behavior)
+   - **See this Section for more detail about [QueueIT variables](#queueit-variables) describes queue-it variables in detail.**
+ - Step 7: In Akamai Property, create a behaviour for the URL/Hostname/Conditions where the edge worker will apply choose the name of EdgeWorker created in the upper    section (make sure you are not executing edgeworker for static resources)
+ - Step 8: Add a Site Failover behavior to retry if EdgeWorker fails](#adding-a-site-failover-behaviour)
+ - Step 9: Add Rule for Integration Download following Step 6 if not completed already
+ - Step 10: Add a user varible PMUSER_TRUE_CLIENT_IP and a behaviour to set PMUSER_TRUE_CLIENT_IP variable to {{builtin.AK_CLIENT_REAL_IP}}](#adding-set-ip-behaviour)
+ - Step 11: Save and Activate the updated Akamai Property configuration
 
 ** https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-53F43F70-BEBC-4BA4-A2FB-3F23A6125106.html 
 
