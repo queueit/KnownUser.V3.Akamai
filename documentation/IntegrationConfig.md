@@ -7,7 +7,8 @@ In this way you can specify which queue(s) should protect which page(s) on the f
 This configuration can then be used in Edge Worker by three ways.
   
 ## 1. Manually updating integration config within Edge worker code
-Latest integration config can be downloaded from GO Queue-it Platform and then updated by replacing "inlineIntegrationConfig" variable value in integrationConfigProvider.js file.
+Latest integration config can be downloaded from GO Queue-it Platform and then updated by replacing "inlineIntegrationConfig" variable value in integrationConfigProvider.js file. Download the integration config manually under the Integration/Overview.  Show/Hide Instructions to show the options.  Choose the "Manually download the configuration file and place it on your servers" option to "Download".  Open the file which is downloaded.  It will contain the configuration in decoded format.
+
 To use the inline integration config, set 'QUEUEIT_CONFIG_TYPE' queue-it variable value to 'inline' in Akamai property manager.
 
 ## 2. Dynamically download and cache integration config
